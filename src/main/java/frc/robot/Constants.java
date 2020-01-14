@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.Joystick;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    // Driving Constants
     public static final int kJoystickPort = 0;
     public static final int kThrottleAxis = 1;
     public static final int kTurnAxis = 2;
@@ -27,6 +29,10 @@ public final class Constants {
     public static final boolean kThrottleInverted = true;
     public static final boolean kTurnInverted = false;
     public static final boolean kTurnBoostInverted = false;
+
+    // Motion Profiling Constants
     public static final int kAutoTimeStepMs = 10;
     public static final double kDriveBaseWidth = 21.25;
+    public static final double kB = 2.0;
+    public static final double kZeta = 0.7;
 }
