@@ -24,15 +24,27 @@ public final class Constants {
     public static final int kThrottleAxis = 1;
     public static final int kTurnAxis = 2;
     public static final int kTurnBoostAxis = 0;
-    public static final double kMaxPower = 0.75;
-    public static final double kTurnRatio = 0.4;
+    public static final double kMaxPower = 1.0;
+    public static final double kTurnRatio = 0.5;
     public static final boolean kThrottleInverted = true;
     public static final boolean kTurnInverted = false;
     public static final boolean kTurnBoostInverted = false;
 
     // Motion Profiling Constants
-    public static final int kAutoTimeStepMs = 10;
+    public static final int kMinBufferedPoints = 100;
+    public static final int kAutoTimeStepMs = 5;
     public static final double kDriveBaseWidth = 21.25;
-    public static final double kB = 2.0;
+    public static final double kB = 2.0;  
     public static final double kZeta = 0.7;
+    public static final double kTicksPerFt = 2882.07823;
+
+    // PID
+    public static final int kSlot = 0;
+    public static final double kF = 0.0;
+    public static final double kP = 5.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final int kIntegralAccumulatorLimit = 100;
+
+
 }

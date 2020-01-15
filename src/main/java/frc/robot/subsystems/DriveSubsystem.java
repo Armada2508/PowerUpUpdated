@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motion.MotionProfileStatus;
+import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -17,10 +19,10 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Creates a new ExampleSubsystem.
    */
-  TalonSRX left = new TalonSRX(7);
-  TalonSRX leftFollower = new TalonSRX(8);
-  TalonSRX right = new TalonSRX(3);
-  TalonSRX rightFollower = new TalonSRX(4);
+  public TalonSRX left = new TalonSRX(7);
+  private TalonSRX leftFollower = new TalonSRX(8);
+  public TalonSRX right = new TalonSRX(3);
+  private TalonSRX rightFollower = new TalonSRX(4);
 
   public DriveSubsystem() {
     left.configFactoryDefault();
@@ -31,6 +33,8 @@ public class DriveSubsystem extends SubsystemBase {
     rightFollower.follow(right);
     left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     right.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    left.configMotionProfileTrajectoryPeriod(0);
+    right.configMotionProfileTrajectoryPeriod(0);
   }
 
   @Override
@@ -41,5 +45,16 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double powerL, double powerR) {
     left.set(ControlMode.PercentOutput, powerL);
     right.set(ControlMode.PercentOutput, powerR);
+  }
+
+  public void reset() {
+    left.configFactoryDefault();
+    right.configFactoryDefault();
+    left.clearMotionProfileTrajectories();
+    right.clearMotionProfileTrajectories();
+    leftFollower.clearMotionProfileTrajectories();
+    rightFollower.clearMotionProfileTrajectories();
+    right.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+    left.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
   }
 }

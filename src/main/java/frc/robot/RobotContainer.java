@@ -51,9 +51,13 @@ public class RobotContainer {
     
   }
 
+  public void reset() {
+    m_driveSubsystem.reset();
+  }
+
   public Command getAutonomousCommand() {
     try {
-      return new AutoTest(m_driveSubsystem, TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/Path1.wpilib.json")));    
+      return new AutoTest(m_driveSubsystem, TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/Path3.wpilib.json")));    
     } catch (IOException e) {
       return new InstantCommand();
     }

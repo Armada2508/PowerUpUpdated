@@ -21,4 +21,9 @@ public class WheelPositions {
     public double getLeft() {
         return m_LWheelPos;
     }
+
+    @Override
+    public String toString() {
+        return ("Right Wheel Position: " + m_RWheelPos + ", Left Wheel Position: w" + m_LWheelPos);
+    }
 }

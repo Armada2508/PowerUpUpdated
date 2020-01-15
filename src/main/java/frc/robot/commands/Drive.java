@@ -75,7 +75,7 @@ public class Drive extends CommandBase {
       powerR = m_maxPower;
       powerL = m_maxPower + turningPower;
     }
-      m_driveSubsystem.drive(powerL, powerR);
+    m_driveSubsystem.drive(powerL, powerR);
   }
 
   // Called once the command ends or is interrupted.
