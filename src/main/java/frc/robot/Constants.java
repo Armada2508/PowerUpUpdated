@@ -40,9 +40,9 @@ public final class Constants {
 
     // PID
     public static final int kSlot = 0;
-    public static final double kF = 0.0;
-    public static final double kP = 5.0;
-    public static final double kI = 0.0;
+    public static final double kF = 0.25;
+    public static final double kP = 0.25;
+    public static final double kI = 0.0025;
     public static final double kD = 0.0;
     public static final int kIntegralAccumulatorLimit = 100;
 

@@ -76,8 +76,8 @@ public class AutoTest extends CommandBase {
       double time = i * Constants.kAutoTimeStepMs;
       rightTrajectoryPoint.zeroPos = ( i == 0 );
       leftTrajectoryPoint.zeroPos = ( i == 0 );
-      rightTrajectoryPoint.isLastPoint = ( i > m_trajectory.getTotalTimeSeconds()/(Constants.kAutoTimeStepMs/1000.0));
-      leftTrajectoryPoint.isLastPoint = ( i > m_trajectory.getTotalTimeSeconds()/(Constants.kAutoTimeStepMs/1000.0));
+      rightTrajectoryPoint.isLastPoint = ( i > m_trajectory.getTotalTimeSeconds()/(Constants.kAutoTimeStepMs/1000.0)-1);
+      leftTrajectoryPoint.isLastPoint = ( i > m_trajectory.getTotalTimeSeconds()/(Constants.kAutoTimeStepMs/1000.0)-1);
       WheelPositions wheelPositions = calcPos(time);
       rightDistance += wheelPositions.getRight();
       leftDistance += wheelPositions.getLeft();
