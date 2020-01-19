@@ -12,7 +12,8 @@ import java.nio.file.Paths;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.AutoTest;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.motion.FollowTrajectory;
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
@@ -29,7 +30,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  private Joystick m_joystick = new Joystick(Constants.kJoystickPort); 
+  private Joystick m_joystick = new Joystick(Constants.kJoystickPort);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -38,7 +39,23 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    m_driveSubsystem.setDefaultCommand(new Drive(m_driveSubsystem, m_joystick, Constants.kThrottleAxis, Constants.kTurnAxis, Constants.kTurnBoostAxis, Constants.kThrottleInverted, Constants.kTurnInverted, Constants.kTurnBoostInverted, Constants.kMaxPower, Constants.kTurnRatio));
+    m_driveSubsystem.setDefaultCommand(new Drive(
+      m_driveSubsystem,
+      m_joystick,
+      Constants.kThrottleAxis,
+      Constants.kTurnAxis,
+      Constants.kTurnBoostAxis,
+      Constants.kThrottleInverted,
+      Constants.kTurnInverted,
+      Constants.kTurnBoostInverted,
+      Constants.kMaxPower,
+      Constants.kTurnRatio
+    ));
+
+  }
+
+  private void init() {
+    FollowTrajectory.config(Constants.kS, Constants.kV, Constants.kA, Constants.kB, Constants.kZeta, Constants.kTrackWidth, Constants.kMaxMotorVoltage);
   }
 
   /**
@@ -51,13 +68,27 @@ public class RobotContainer {
     
   }
 
+  public void updateDashboard() {
+    SmartDashboard.putNumber("kP", Constants.kP);
+    SmartDashboard.putNumber("kI", Constants.kI);
+    SmartDashboard.putNumber("kD", Constants.kD);
+    SmartDashboard.putNumber("kF", Constants.kF);
+    SmartDashboard.putNumber("kMaxIntegralAccumulator", Constants.kMIA);
+  }
+
   public void reset() {
-    m_driveSubsystem.reset();
+    m_driveSubsystem.resetTalons();
+  }
+
+  public void printGyro() {
+    System.out.println(m_driveSubsystem.getHeading());
   }
 
   public Command getAutonomousCommand() {
+
+    FollowTrajectory followTrajectory = new FollowTrajectory();
     try {
-      return new AutoTest(m_driveSubsystem, TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/Path3.wpilib.json")));    
+      return followTrajectory.getCommand(m_driveSubsystem, TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/Path4.wpilib.json")));  
     } catch (IOException e) {
       return new InstantCommand();
     }

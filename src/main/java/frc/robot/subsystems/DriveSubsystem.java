@@ -7,54 +7,180 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motion.MotionProfileStatus;
-import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.drive.*;
+import edu.wpi.first.wpilibj.geometry.*;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.motion.EncoderUtil;
+import frc.robot.Constants;
 
 public class DriveSubsystem extends SubsystemBase {
   /**
-   * Creates a new ExampleSubsystem.
+   * Creates a new DriveSubsystem.
    */
-  public TalonSRX left = new TalonSRX(7);
-  private TalonSRX leftFollower = new TalonSRX(8);
-  public TalonSRX right = new TalonSRX(3);
-  private TalonSRX rightFollower = new TalonSRX(4);
+
+  private final WPI_TalonSRX m_right = new WPI_TalonSRX(Constants.kRightMotorPort);
+  private final WPI_TalonSRX m_rightFollower = new WPI_TalonSRX(Constants.kRightMotorFollowerPort);
+  private final WPI_TalonSRX m_left = new WPI_TalonSRX(Constants.kLeftMotorPort);
+  private final WPI_TalonSRX m_leftFollower = new WPI_TalonSRX(Constants.kLeftMotorFollowerPort);
+
+  private final SpeedControllerGroup m_rightMotors = new SpeedControllerGroup(m_right, m_rightFollower);
+  private final SpeedControllerGroup m_leftMotors = new SpeedControllerGroup(m_left, m_leftFollower);
+
+  private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
+
+  private final PigeonIMU m_imu = new PigeonIMU(0);
+
+  private final DifferentialDriveOdometry m_odometry;
 
   public DriveSubsystem() {
-    left.configFactoryDefault();
-    leftFollower.configFactoryDefault();
-    right.configFactoryDefault();
-    rightFollower.configFactoryDefault();
-    leftFollower.follow(left);
-    rightFollower.follow(right);
-    left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    right.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    left.configMotionProfileTrajectoryPeriod(0);
-    right.configMotionProfileTrajectoryPeriod(0);
+    resetHeading();
+    resetEncoders();
+    
+    m_right.configFactoryDefault();
+    m_rightFollower.configFactoryDefault();
+    m_left.configFactoryDefault();
+    m_leftFollower.configFactoryDefault();
+    m_rightFollower.follow(m_right);
+    m_leftFollower.follow(m_left);
+    m_right.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    m_left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    m_right.configMotionProfileTrajectoryPeriod(0);
+    m_left.configMotionProfileTrajectoryPeriod(0);
+
+    resetEncoders();
+
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_odometry.update(Rotation2d.fromDegrees(getHeading()), getPositionLeft(), getPositionRight());
   }
 
-  public void drive(double powerL, double powerR) {
-    left.set(ControlMode.PercentOutput, powerL);
-    right.set(ControlMode.PercentOutput, powerR);
+  public void setPowers(double powerR, double powerL) {
+    m_right.set(ControlMode.PercentOutput, powerR);
+    m_left.set(ControlMode.PercentOutput, powerL);
+  }
+
+  public void setVoltage(double voltsR, double voltsL) {
+    m_right.setVoltage(voltsR);
+    m_left.setVoltage(voltsR);
+  }
+  
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
+  public double getHeading() {
+    return Math.IEEEremainder(m_imu.getFusedHeading(), 360) * (Constants.kGyroReversed ? -1.0 : 1.0);
+  }
+  
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getVelocityLeft(), getVelocityRight());
   }
 
   public void reset() {
-    left.configFactoryDefault();
-    right.configFactoryDefault();
-    left.clearMotionProfileTrajectories();
-    right.clearMotionProfileTrajectories();
-    leftFollower.clearMotionProfileTrajectories();
-    rightFollower.clearMotionProfileTrajectories();
-    right.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
-    left.set(ControlMode.MotionProfile, SetValueMotionProfile.Disable.value);
+    resetEncoders();
+    resetTalons();
+    resetHeading();
   }
+
+  private void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+  }
+
+  private void resetEncoders() {
+    resetEncoder(m_right);
+    resetEncoder(m_left);
+  }
+
+  private void resetEncoder(TalonSRX talon) {
+    talon.setSelectedSensorPosition(0);
+  }
+
+  private void resetHeading() {
+    m_imu.setFusedHeading(0);
+  }
+
+  public void resetTalons() {
+    m_left.configFactoryDefault();
+    m_right.configFactoryDefault();
+    m_right.set(ControlMode.PercentOutput, 0.0);
+    m_left.set(ControlMode.PercentOutput, 0.0);
+  }
+  public double getPositionLeft() {
+    return toDistance(m_left.getSelectedSensorPosition());
+  }
+  
+  public double getPositionRight() {
+    return toDistance(m_right.getSelectedSensorPosition());
+  }
+
+  public double getPosition() {
+    return (getPositionLeft() + getPositionRight()) / 2.0;
+  }
+
+  public double toDistance(int sensorPosition) {
+    return EncoderUtil.toDistance(sensorPosition, Constants.kTicksPerRev, Constants.kGearRatio, Constants.kWheelDiameter);
+  }
+
+  public double getVelocityRight() {
+   return toVelocity(m_right.getSelectedSensorVelocity());
+  }
+  
+  public double getVelocityLeft() {
+   return toVelocity(m_left.getSelectedSensorVelocity());
+  }
+
+  public double toVelocity(int velocity) {
+    return EncoderUtil.toVelocity(velocity, Constants.kTicksPerRev, Constants.kGearRatio, Constants.kWheelDiameter, Constants.kSampleTime);
+  }
+
+  public void setConfigRight(double kP, double kI, double kD, double kF, double kMIA) {
+    setConfig(kP, kI, kD, kF, kMIA, m_right);
+  }
+  
+  public void setConfigLeft(double kP, double kI, double kD, double kF, double kMIA) {
+    setConfig(kP, kI, kD, kF, kMIA, m_left);
+  }
+  
+  public void setInvertedRight(boolean sensorPhaseInverted, boolean motorInverted) {
+    setInverted(sensorPhaseInverted, motorInverted, m_right);
+  }
+
+  public void setInvertedLeft(boolean sensorPhaseInverted, boolean motorInverted) {
+    setInverted(sensorPhaseInverted, motorInverted, m_left);
+  }
+  
+  private void setConfig(double kP, double kI, double kD, double kF, double kMIA, TalonSRX talon) {
+    talon.config_kP(Constants.kSlot, kP);
+    talon.config_kI(Constants.kSlot, kI);
+    talon.config_kD(Constants.kSlot, kD);
+    talon.config_kF(Constants.kSlot, kF);
+    talon.configMaxIntegralAccumulator(Constants.kSlot, kMIA);
+  }
+
+  private void setInverted(boolean sensorPhaseInverted, boolean motorInverted, TalonSRX talon) {
+    talon.setSensorPhase(sensorPhaseInverted);
+  }
+
+  public void setMaxOutput(double maxOutput) {
+    m_drive.setMaxOutput(maxOutput);
+  }
+
+ /* public double getTurnRate() {
+    return 
+  }*/
 }

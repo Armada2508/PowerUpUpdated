@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -19,7 +18,14 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public final class Constants {
 
+    // Motor Ports
+    public static final int kRightMotorPort = 3;
+    public static final int kRightMotorFollowerPort = 4;
+    public static final int kLeftMotorPort = 7;
+    public static final int kLeftMotorFollowerPort = 8;
+
     // Driving Constants
+    public static final double kDeadbandThreshold = 0.06;
     public static final int kJoystickPort = 0;
     public static final int kThrottleAxis = 1;
     public static final int kTurnAxis = 2;
@@ -30,21 +36,30 @@ public final class Constants {
     public static final boolean kTurnInverted = false;
     public static final boolean kTurnBoostInverted = false;
 
-    // Motion Profiling Constants
-    public static final int kMinBufferedPoints = 100;
-    public static final int kAutoTimeStepMs = 5;
-    public static final double kDriveBaseWidth = 21.25;
-    public static final double kB = 2.0;  
-    public static final double kZeta = 0.7;
-    public static final double kTicksPerFt = 2882.07823;
+    // Trajectory Following Constants
+    public static final double kS = 0.93;
+    public static final double kV = 1.12;
+    public static final double kA = 0.118;
+    public static final double kTrackWidth = 21.25/12.0;
+    public static final double kB = 6.5;  
+    public static final double kZeta = 2.3;
+//    public static final double kTicksPerFt = 2882.07823;
+    public static final int kTicksPerRev = 4096;
+    public static final double kWheelDiameter = 0.5;
+    public static final double kGearRatio = 42.0/38.0;
+    public static final double kSampleTime = 0.1;
+    public static final double kMaxMotorVoltage = 12.0;
 
     // PID
     public static final int kSlot = 0;
-    public static final double kF = 0.25;
-    public static final double kP = 0.25;
-    public static final double kI = 0.0025;
-    public static final double kD = 0.0;
-    public static final int kIntegralAccumulatorLimit = 100;
+    public static final double kF = 0.0;
+    public static final double kP = 0.00673;
+    public static final double kI = 0.0;
+    public static final double kD = 0.00167;
+    public static final int kMIA = 200;
+
+    // Gyro Settings
+    public static final boolean kGyroReversed = false;
 
 
 }

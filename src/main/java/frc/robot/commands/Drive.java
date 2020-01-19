@@ -7,6 +7,8 @@
 
 package frc.robot.commands;
 
+import frc.lib.drive.JoystickUtil;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -57,16 +59,27 @@ public class Drive extends CommandBase {
     double throttle = m_joystick.getRawAxis(m_throttleAxis);
     double turn = m_joystick.getRawAxis(m_turnAxis);
     double turnBoost = m_joystick.getRawAxis(m_turnBoostAxis);
+    
+    System.out.println(throttle);
+
+    throttle = JoystickUtil.deadband(throttle, Constants.kDeadbandThreshold);
+    turn = JoystickUtil.deadband(turn, Constants.kDeadbandThreshold);
+    turnBoost = JoystickUtil.deadband(turnBoost, Constants.kDeadbandThreshold);
+
     if(m_throttleInverted) throttle *= -1;
     if(m_turnInverted) turn *= -1;
     if(m_turnBoostInverted) turnBoost *= -1; 
+
     turn *= m_turnRatio;
     turnBoost *= m_turnRatio;
     turn += turnBoost; 
+
     double powerL = throttle + turn;
     double powerR = throttle - turn;
+
     powerR *= m_maxPower;
     powerL *= m_maxPower;
+
     double turningPower = powerL - powerR;
     if(turningPower > 0 && powerL > m_maxPower) {
       powerL = m_maxPower;
@@ -75,7 +88,7 @@ public class Drive extends CommandBase {
       powerR = m_maxPower;
       powerL = m_maxPower + turningPower;
     }
-    m_driveSubsystem.drive(powerL, powerR);
+    m_driveSubsystem.setPowers(powerR, powerL);
   }
 
   // Called once the command ends or is interrupted.

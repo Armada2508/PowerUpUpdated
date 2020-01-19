@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.*;
 public class Robot extends TimedRobot {
   
   private RobotContainer m_robotContainer;
-
   private Command m_autonomousCommand;
 
   /**
@@ -34,6 +33,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
   
     m_robotContainer = new RobotContainer();
+
+    m_robotContainer.updateDashboard();
     
   }
 
