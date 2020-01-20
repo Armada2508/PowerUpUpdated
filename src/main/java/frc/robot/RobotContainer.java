@@ -19,6 +19,7 @@ import frc.robot.subsystems.*;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.*;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -33,7 +34,7 @@ public class RobotContainer {
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
     private ShuffleboardTab m_sensorLoggerTab = Shuffleboard.getTab("Logger");
     private NetworkTableEntry m_gyroEntry;
-    private NetworkTableEntry m_senorLoggerTabEntry;
+    private NetworkTableEntry m_odometer;
 
 
     /**
@@ -92,15 +93,16 @@ public class RobotContainer {
                 .withWidget(BuiltInWidgets.kGraph)
                 .getEntry();
 
-        m_senorLoggerTabEntry = m_sensorLoggerTab.add("Odometer", m_driveSubsystem.getAverageDistance())
+        m_odometer = m_sensorLoggerTab.add("Odometer", m_driveSubsystem.getAverageDistance())
                 .withWidget(BuiltInWidgets.kGraph)
                 .getEntry();
     }
 
     public void updateDashboard() {
-        m_senorLoggerTabEntry.setValue(false);
         m_gyroEntry.setDouble(m_driveSubsystem.getGyro().getFusedHeading());
-        m_senorLoggerTabEntry.setDouble(m_driveSubsystem.getAverageDistance());
+
+        Random rd = new Random();
+        m_odometer.setDouble(m_driveSubsystem.getAverageDistance() + (rd.nextDouble() / 100));
     }
 
 
