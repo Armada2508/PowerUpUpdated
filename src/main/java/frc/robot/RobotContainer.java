@@ -110,7 +110,7 @@ public class RobotContainer {
 
             int count = 0;
             for (NetworkTableEntry t : talonEntries) {
-                t.setValue(m_driveSubsystem.getAllTalons()[count].getMotorOutputVoltage());
+                t.setDouble(m_driveSubsystem.getAllTalons()[count].getMotorOutputVoltage());
                 count++;
             }
         }
