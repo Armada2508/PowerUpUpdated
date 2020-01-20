@@ -10,6 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj2.command.*;
@@ -99,10 +100,16 @@ public class RobotContainer {
     }
 
     public void updateDashboard() {
-        m_gyroEntry.setDouble(m_driveSubsystem.getGyro().getFusedHeading());
 
-        Random rd = new Random();
-        m_odometer.setDouble(m_driveSubsystem.getAverageDistance() + (rd.nextDouble() / 100));
+        if(Timer.getFPGATimestamp() / 0.02 % (Constants.kUpdateRate / 0.02) < 1) {
+            
+            Random noise = new Random();
+            
+            m_gyroEntry.setDouble(m_driveSubsystem.getGyro().getFusedHeading() + (noise.nextDouble() / 10000));
+
+            m_odometer.setDouble(m_driveSubsystem.getAverageDistance() + (noise.nextDouble() / 10000));
+        
+        }
     }
 
 

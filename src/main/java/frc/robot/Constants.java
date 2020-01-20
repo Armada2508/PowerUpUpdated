@@ -49,7 +49,6 @@ public final class Constants {
     public static final double kTrackWidth = 21.25/12.0;
     public static final double kB = 2;  
     public static final double kZeta = 0.7;
-//    public static final double kTicksPerFt = 2882.07823;
     public static final int kTicksPerRev = 4096;
     public static final double kWheelDiameter = 0.5;
     public static final double kGearRatio = 42.0/38.0;
@@ -66,6 +65,9 @@ public final class Constants {
 
     // Gyro Settings
     public static final boolean kGyroReversed = false;
+
+    // Dashboard Settings
+    public static final double kUpdateRate = 0.2;
 
 
 }
