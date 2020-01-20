@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   
     m_robotContainer = new RobotContainer();
 
-    m_robotContainer.updateDashboard();
+    m_robotContainer.initDashboard();
 
     m_robotContainer.robotInit();
     
@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_robotContainer.updateDashboard();
   }
 
   /**
@@ -81,7 +82,7 @@ public class Robot extends TimedRobot {
     //m_robotContainer.startDashboardCapture();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-  
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
