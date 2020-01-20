@@ -59,9 +59,8 @@ public class Drive extends CommandBase {
     double throttle = m_joystick.getRawAxis(m_throttleAxis);
     double turn = m_joystick.getRawAxis(m_turnAxis);
     double turnBoost = m_joystick.getRawAxis(m_turnBoostAxis);
-    
-    System.out.println(throttle);
 
+    
     throttle = JoystickUtil.deadband(throttle, Constants.kDeadbandThreshold);
     turn = JoystickUtil.deadband(turn, Constants.kDeadbandThreshold);
     turnBoost = JoystickUtil.deadband(turnBoost, Constants.kDeadbandThreshold);
@@ -88,6 +87,7 @@ public class Drive extends CommandBase {
       powerR = m_maxPower;
       powerL = m_maxPower + turningPower;
     }
+
     m_driveSubsystem.setPowers(powerR, powerL);
   }
 

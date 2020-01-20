@@ -35,6 +35,8 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     m_robotContainer.updateDashboard();
+
+    m_robotContainer.robotInit();
     
   }
 
@@ -46,7 +48,7 @@ public class Robot extends TimedRobot {
    * LiveWindow and SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {
+  public void robotPeriodic() { 
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -60,7 +62,10 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.reset();
+    m_robotContainer.changeMode();
+    /*if(isOperatorControl()) {
+      m_robotContainer.stopDashboardCapture();
+    }*/
   }
 
   @Override
@@ -72,7 +77,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_robotContainer.reset();
+    m_robotContainer.changeMode();
+    //m_robotContainer.startDashboardCapture();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
   
@@ -90,7 +96,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_robotContainer.reset();
+    m_robotContainer.changeMode();
   }
 
   /**
@@ -112,4 +118,5 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
 }

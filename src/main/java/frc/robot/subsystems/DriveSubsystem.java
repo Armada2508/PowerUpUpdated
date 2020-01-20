@@ -13,12 +13,16 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.drive.*;
 import edu.wpi.first.wpilibj.geometry.*;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.motion.EncoderUtil;
 import frc.robot.Constants;
@@ -42,40 +46,38 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final DifferentialDriveOdometry m_odometry;
 
+  private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
+
+  private ComplexWidget m_driveWidget = m_robotTab.add("Drive", m_drive).withWidget(BuiltInWidgets.kDifferentialDrive);
+
   public DriveSubsystem() {
+    m_right.setSensorPhase(Constants.kRightSensorInverted);
+    m_left.setSensorPhase(Constants.kLeftSensorInverted);
+    setInverted(Constants.kRightInverted, m_rightMotors);
+    setInverted(Constants.kLeftInverted, m_leftMotors);
+
+    m_drive.setSafetyEnabled(false);
+
     resetHeading();
     resetEncoders();
-    
-    m_right.configFactoryDefault();
-    m_rightFollower.configFactoryDefault();
-    m_left.configFactoryDefault();
-    m_leftFollower.configFactoryDefault();
-    m_rightFollower.follow(m_right);
-    m_leftFollower.follow(m_left);
-    m_right.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    m_left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    m_right.configMotionProfileTrajectoryPeriod(0);
-    m_left.configMotionProfileTrajectoryPeriod(0);
-
-    resetEncoders();
-
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
   }
 
   @Override
   public void periodic() {
+
     // This method will be called once per scheduler run
     m_odometry.update(Rotation2d.fromDegrees(getHeading()), getPositionLeft(), getPositionRight());
-  }
+  } 
 
   public void setPowers(double powerR, double powerL) {
-    m_right.set(ControlMode.PercentOutput, powerR);
-    m_left.set(ControlMode.PercentOutput, powerL);
+    m_drive.tankDrive(powerL, powerR);
   }
 
   public void setVoltage(double voltsR, double voltsL) {
-    m_right.setVoltage(voltsR);
-    m_left.setVoltage(voltsR);
+    System.out.println(voltsL + "\t" + voltsR);
+    m_rightMotors.setVoltage(voltsR);
+    m_leftMotors.setVoltage(voltsL);
   }
   
   public Pose2d getPose() {
@@ -101,7 +103,11 @@ public class DriveSubsystem extends SubsystemBase {
     m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
-  private void resetEncoders() {
+  public void resetGyro() {
+    m_imu.setFusedHeading(0);
+  }
+
+  public void resetEncoders() {
     resetEncoder(m_right);
     resetEncoder(m_left);
   }
@@ -115,11 +121,24 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void resetTalons() {
-    m_left.configFactoryDefault();
     m_right.configFactoryDefault();
+    m_rightFollower.configFactoryDefault();
+    m_left.configFactoryDefault();
+    m_leftFollower.configFactoryDefault();
     m_right.set(ControlMode.PercentOutput, 0.0);
     m_left.set(ControlMode.PercentOutput, 0.0);
   }
+
+  public void configTalons() {
+    resetTalons();
+    m_rightFollower.follow(m_right);
+    m_leftFollower.follow(m_left);
+    m_right.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    m_left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    m_right.configMotionProfileTrajectoryPeriod(0);
+    m_left.configMotionProfileTrajectoryPeriod(0);
+  }
+
   public double getPositionLeft() {
     return toDistance(m_left.getSelectedSensorPosition());
   }
@@ -128,7 +147,7 @@ public class DriveSubsystem extends SubsystemBase {
     return toDistance(m_right.getSelectedSensorPosition());
   }
 
-  public double getPosition() {
+  public double getAverageDistance() {
     return (getPositionLeft() + getPositionRight()) / 2.0;
   }
 
@@ -156,12 +175,12 @@ public class DriveSubsystem extends SubsystemBase {
     setConfig(kP, kI, kD, kF, kMIA, m_left);
   }
   
-  public void setInvertedRight(boolean sensorPhaseInverted, boolean motorInverted) {
-    setInverted(sensorPhaseInverted, motorInverted, m_right);
+  public void setInvertedRight(boolean isInverted) {
+    setInverted(isInverted, m_rightMotors);
   }
 
-  public void setInvertedLeft(boolean sensorPhaseInverted, boolean motorInverted) {
-    setInverted(sensorPhaseInverted, motorInverted, m_left);
+  public void setInvertedLeft(boolean isInverted) {
+    setInverted(isInverted, m_leftMotors);
   }
   
   private void setConfig(double kP, double kI, double kD, double kF, double kMIA, TalonSRX talon) {
@@ -172,15 +191,11 @@ public class DriveSubsystem extends SubsystemBase {
     talon.configMaxIntegralAccumulator(Constants.kSlot, kMIA);
   }
 
-  private void setInverted(boolean sensorPhaseInverted, boolean motorInverted, TalonSRX talon) {
-    talon.setSensorPhase(sensorPhaseInverted);
+  private void setInverted(boolean isInverted, SpeedControllerGroup motors) {
+    motors.setInverted(isInverted);
   }
 
   public void setMaxOutput(double maxOutput) {
     m_drive.setMaxOutput(maxOutput);
   }
-
- /* public double getTurnRate() {
-    return 
-  }*/
 }

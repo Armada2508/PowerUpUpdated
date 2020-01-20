@@ -36,19 +36,25 @@ public final class Constants {
     public static final boolean kTurnInverted = false;
     public static final boolean kTurnBoostInverted = false;
 
+    // Drive System Constants
+    public static final boolean kRightInverted = true;
+    public static final boolean kLeftInverted = false;
+    public static final boolean kRightSensorInverted = false;
+    public static final boolean kLeftSensorInverted = true;
+
     // Trajectory Following Constants
     public static final double kS = 0.93;
     public static final double kV = 1.12;
     public static final double kA = 0.118;
     public static final double kTrackWidth = 21.25/12.0;
-    public static final double kB = 6.5;  
-    public static final double kZeta = 2.3;
+    public static final double kB = 2;  
+    public static final double kZeta = 0.7;
 //    public static final double kTicksPerFt = 2882.07823;
     public static final int kTicksPerRev = 4096;
     public static final double kWheelDiameter = 0.5;
     public static final double kGearRatio = 42.0/38.0;
     public static final double kSampleTime = 0.1;
-    public static final double kMaxMotorVoltage = 12.0;
+    public static final double kMaxMotorVoltage = 0.0;
 
     // PID
     public static final int kSlot = 0;

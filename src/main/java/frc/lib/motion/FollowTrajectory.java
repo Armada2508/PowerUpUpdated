@@ -16,8 +16,7 @@ public class FollowTrajectory {
     private static SimpleMotorFeedforward m_feedforward;
 
     private static DifferentialDriveKinematics m_kinematics;
-  
-    private static DifferentialDriveVoltageConstraint voltageConstraint;
+
   
     private Trajectory m_trajectory;
   
@@ -26,7 +25,6 @@ public class FollowTrajectory {
     public static void config(double kS, double kV, double kA, double b, double zeta, double trackWidth, double maxMotorVoltage) {
         m_feedforward = new SimpleMotorFeedforward(kS, kV, kA);
         m_kinematics = new DifferentialDriveKinematics(trackWidth);
-        voltageConstraint = new DifferentialDriveVoltageConstraint(m_feedforward, m_kinematics, maxMotorVoltage);
         m_controller = new RamseteController(b, zeta);
     }
     
@@ -40,8 +38,8 @@ public class FollowTrajectory {
             m_feedforward,
             m_kinematics,
             m_driveSubsystem::getWheelSpeeds,
-            new PIDController(0, 0, 0),
-            new PIDController(0, 0, 0),
+            new PIDController(0.05, 0, 0),
+            new PIDController(0.05, 0, 0),
             m_driveSubsystem::setVoltage,
             m_driveSubsystem);
     }

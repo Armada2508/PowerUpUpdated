@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.motion.FollowTrajectory;
 import frc.robot.commands.Drive;
@@ -31,6 +33,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private Joystick m_joystick = new Joystick(Constants.kJoystickPort);
+  private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -54,7 +57,8 @@ public class RobotContainer {
 
   }
 
-  private void init() {
+  public void robotInit() {
+    m_driveSubsystem.configTalons();
     FollowTrajectory.config(Constants.kS, Constants.kV, Constants.kA, Constants.kB, Constants.kZeta, Constants.kTrackWidth, Constants.kMaxMotorVoltage);
   }
 
@@ -69,28 +73,42 @@ public class RobotContainer {
   }
 
   public void updateDashboard() {
-    SmartDashboard.putNumber("kP", Constants.kP);
-    SmartDashboard.putNumber("kI", Constants.kI);
-    SmartDashboard.putNumber("kD", Constants.kD);
-    SmartDashboard.putNumber("kF", Constants.kF);
-    SmartDashboard.putNumber("kMaxIntegralAccumulator", Constants.kMIA);
+    m_robotTab.add("kP", Constants.kP);
+    m_robotTab.add("kI", Constants.kI);
+    m_robotTab.add("kD", Constants.kD);
+    m_robotTab.add("kF", Constants.kF);
+    m_robotTab.add("kMaxIntegralAccumulator", Constants.kMIA);
   }
 
-  public void reset() {
+  public void startDashboardCapture() {
+    Shuffleboard.startRecording();
+  }
+
+  public void stopDashboardCapture() {
+    Shuffleboard.startRecording();
+  }
+
+  public void changeMode() {
     m_driveSubsystem.resetTalons();
-  }
-
-  public void printGyro() {
-    System.out.println(m_driveSubsystem.getHeading());
+    m_driveSubsystem.resetGyro();
+    m_driveSubsystem.resetEncoders();
   }
 
   public Command getAutonomousCommand() {
 
     FollowTrajectory followTrajectory = new FollowTrajectory();
+    
     try {
-      return followTrajectory.getCommand(m_driveSubsystem, TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/Path4.wpilib.json")));  
+      return followTrajectory.getCommand(m_driveSubsystem, TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/output/Line.wpilib.json")));  
     } catch (IOException e) {
+      System.out.println(e);
       return new InstantCommand();
     }
   }
+
+  
+  public void printPos() {
+    System.out.println(m_driveSubsystem.getPositionLeft() + "\t" + m_driveSubsystem.getPositionRight());
+  }
+
 }
