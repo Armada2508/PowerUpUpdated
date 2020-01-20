@@ -9,8 +9,8 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj2.command.*;
@@ -31,6 +31,7 @@ import java.util.*;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+    ArrayList<NetworkTableEntry> talonEntries = new ArrayList();
     private Joystick m_joystick = new Joystick(Constants.kJoystickPort);
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
     private ShuffleboardTab m_sensorLoggerTab = Shuffleboard.getTab("Logger");
@@ -86,7 +87,7 @@ public class RobotContainer {
 
         for (int i = 0; i < allTalons.length; i++) {
             WPI_TalonSRX talon = allTalons[i];
-            m_sensorLoggerTab.add("Talon " + (talon.getDeviceID()), talon.getMotorOutputVoltage());
+            talonEntries.add(m_sensorLoggerTab.add("Talon " + (talon.getDeviceID()), talon.getMotorOutputVoltage()).withWidget(BuiltInWidgets.kGraph).getEntry());
         }
 
         m_gyroEntry = m_sensorLoggerTab.add("Gyro", m_driveSubsystem.getGyro()
@@ -101,14 +102,17 @@ public class RobotContainer {
 
     public void updateDashboard() {
 
-        if(Timer.getFPGATimestamp() / 0.02 % (Constants.kUpdateRate / 0.02) < 1) {
-            
-            Random noise = new Random();
-            
-            m_gyroEntry.setDouble(m_driveSubsystem.getGyro().getFusedHeading() + (noise.nextDouble() / 10000));
+        if (Timer.getFPGATimestamp() / 0.02 % (Constants.kUpdateRate / 0.02) < 1) {
 
+            Random noise = new Random();
+            m_gyroEntry.setDouble(m_driveSubsystem.getGyro().getFusedHeading() + (noise.nextDouble() / 10000));
             m_odometer.setDouble(m_driveSubsystem.getAverageDistance() + (noise.nextDouble() / 10000));
-        
+
+            int count = 0;
+            for (NetworkTableEntry t : talonEntries) {
+                t.setValue(m_driveSubsystem.getAllTalons()[count].getMotorOutputVoltage());
+                count++;
+            }
         }
     }
 
