@@ -98,6 +98,7 @@ public class RobotContainer {
     }
 
     public void updateDashboard() {
+        m_senorLoggerTabEntry.setValue(false);
         m_gyroEntry.setDouble(m_driveSubsystem.getGyro().getFusedHeading());
         m_senorLoggerTabEntry.setDouble(m_driveSubsystem.getAverageDistance());
     }
