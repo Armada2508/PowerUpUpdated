@@ -85,9 +85,11 @@ public class RobotContainer {
 
         WPI_TalonSRX[] allTalons = m_driveSubsystem.getAllTalons();
 
-        for (int i = 0; i < allTalons.length; i++) {
-            WPI_TalonSRX talon = allTalons[i];
-            talonEntries.add(m_sensorLoggerTab.add("Talon " + (talon.getDeviceID()), talon.getMotorOutputVoltage()).withWidget(BuiltInWidgets.kGraph).getEntry());
+        for (WPI_TalonSRX talon : allTalons) {
+            talonEntries.add(m_sensorLoggerTab.add("Talon " + (talon.getDeviceID()),
+                    talon.getMotorOutputVoltage())
+                    .withWidget(BuiltInWidgets.kGraph)
+                    .getEntry());
         }
 
         m_gyroEntry = m_sensorLoggerTab.add("Gyro", m_driveSubsystem.getGyro()
