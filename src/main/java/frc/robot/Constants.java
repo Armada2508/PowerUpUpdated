@@ -58,9 +58,9 @@ public final class Constants {
     // PID
     public static final int kSlot = 0;
     public static final double kF = 0.0;
-    public static final double kP = 0.00673;
+    public static final double kP = 18.3; // For Talons: 0.00673;
     public static final double kI = 0.0;
-    public static final double kD = 0.00167;
+    public static final double kD = 8.43; // For Talons: 0.00167;
     public static final int kMIA = 200;
 
     // Gyro Settings

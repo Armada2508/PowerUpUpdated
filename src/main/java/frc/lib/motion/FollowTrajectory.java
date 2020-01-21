@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj.trajectory.constraint.*;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Constants;
 import frc.robot.subsystems.*;
 
 
@@ -52,8 +53,8 @@ public class FollowTrajectory {
                 m_feedforward,
                 m_kinematics,
                 m_driveSubsystem::getWheelSpeeds,   // Equivalent Statement: () -> m_driveSubsystem.getWheelSpeeds(),
-                new PIDController(0.05, 0, 0),
-                new PIDController(0.05, 0, 0),
+                new PIDController(Constants.kP, 0, Constants.kD),
+                new PIDController(Constants.kP, 0, Constants.kD),
                 m_driveSubsystem::setVoltage,       // Equivalent Statement: (voltsR, voltsL) -> m_driveSubsystem.setVoltage(voltsR, voltsL)
                 m_driveSubsystem);
     }
