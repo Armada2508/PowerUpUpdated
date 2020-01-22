@@ -1,9 +1,9 @@
 package frc.lib.motion;
 
 import edu.wpi.first.wpilibj.controller.*;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj.trajectory.*;
-import edu.wpi.first.wpilibj.trajectory.constraint.*;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
@@ -19,7 +19,6 @@ public class FollowTrajectory {
   
     private static RamseteController m_controller;
     private DriveSubsystem m_driveSubsystem;
-    private Trajectory m_trajectory;
 
     /**
      * @param kS
@@ -43,9 +42,9 @@ public class FollowTrajectory {
      * @param trajectory
      * @return
      */
-    public RamseteCommand getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory) {
+    public RamseteCommand getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
         m_driveSubsystem = driveSubsystem;
-        m_trajectory = trajectory;
+        trajectory = trajectory.relativeTo(zeroPose);
         return new RamseteCommand(
                 trajectory,
                 m_driveSubsystem::getPose,          // Equivalent Statement: () -> m_driveSubsystem.getPose(),

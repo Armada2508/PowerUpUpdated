@@ -62,6 +62,7 @@ public class RobotContainer {
     }
 
     public void robotInit() {
+        initDashboard();
         m_driveSubsystem.configTalons();
         FollowTrajectory.config(Constants.kS, Constants.kV, Constants.kA, Constants.kB, Constants.kZeta, Constants.kTrackWidth, Constants.kMaxMotorVoltage);
     }
@@ -138,7 +139,8 @@ public class RobotContainer {
         FollowTrajectory followTrajectory = new FollowTrajectory();
 
         try {
-            return followTrajectory.getCommand(m_driveSubsystem, TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/output/Line.wpilib.json")));
+            Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/output/Line.wpilib.json"));
+            return followTrajectory.getCommand(m_driveSubsystem, trajectory, trajectory.getInitialPose());
         } catch (IOException e) {
             System.out.println(e);
             return new InstantCommand();

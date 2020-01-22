@@ -34,8 +34,6 @@ public class Robot extends TimedRobot {
   
     m_robotContainer = new RobotContainer();
 
-    m_robotContainer.initDashboard();
-
     m_robotContainer.robotInit();
     
   }

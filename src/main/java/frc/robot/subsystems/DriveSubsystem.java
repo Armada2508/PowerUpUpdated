@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.lib.motion.*;
 import frc.robot.*;
 
-import java.lang.reflect.*;
 
 public class DriveSubsystem extends SubsystemBase {
     /**
@@ -39,8 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final PigeonIMU m_imu = new PigeonIMU(0);
     private final DifferentialDriveOdometry m_odometry;
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
-    private ComplexWidget m_driveWidget = m_robotTab.add("Drive", m_drive).withWidget(BuiltInWidgets.kDifferentialDrive);
-
+    
     public DriveSubsystem() {
         m_right.setSensorPhase(Constants.kRightSensorInverted);
         m_left.setSensorPhase(Constants.kLeftSensorInverted);
@@ -48,6 +46,9 @@ public class DriveSubsystem extends SubsystemBase {
         setInverted(Constants.kLeftInverted, m_leftMotors);
 
         m_drive.setSafetyEnabled(false);
+
+        m_robotTab.add("Drive", m_drive).withWidget(BuiltInWidgets.kDifferentialDrive);
+
 
         resetHeading();
         resetEncoders();
