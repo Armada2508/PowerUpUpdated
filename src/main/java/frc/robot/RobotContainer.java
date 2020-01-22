@@ -63,7 +63,7 @@ public class RobotContainer {
 
     public void robotInit() {
         m_driveSubsystem.configTalons();
-        FollowTrajectory.config(Constants.kS, Constants.kV, Constants.kA, Constants.kB, Constants.kZeta, Constants.kTrackWidth, Constants.kMaxMotorVoltage);
+        FollowTrajectory.config(Constants.kS, Constants.kV, Constants.kA, Constants.kB, Constants.kZeta, Constants.kTrackWidth);
     }
 
     /**
@@ -110,7 +110,7 @@ public class RobotContainer {
 
             int count = 0;
             for (NetworkTableEntry t : talonEntries) {
-                t.setDouble(m_driveSubsystem.getAllTalons()[count].getMotorOutputVoltage());
+                t.setDouble(m_driveSubsystem.getAllTalons()[count].getMotorOutputVoltage() + (noise.nextDouble() / 10000));
                 count++;
             }
         }
@@ -145,7 +145,7 @@ public class RobotContainer {
 
 
     public void printPos() {
-        System.out.println(m_driveSubsystem.getPositionLeft() + "\t" + m_driveSubsystem.getPositionRight());
+        System.out.println(m_driveSubsystem.getPose());
     }
 
 }

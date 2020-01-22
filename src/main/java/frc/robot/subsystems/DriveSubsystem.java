@@ -67,7 +67,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void setVoltage(double voltsR, double voltsL) {
-        System.out.println(voltsL + "\t" + voltsR);
+        //System.out.println(voltsL + "\t" + voltsR);
         m_rightMotors.setVoltage(voltsR);
         m_leftMotors.setVoltage(voltsL);
     }
