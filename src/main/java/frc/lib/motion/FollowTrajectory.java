@@ -1,9 +1,11 @@
 package frc.lib.motion;
 
 import edu.wpi.first.wpilibj.controller.*;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Constants;
 import frc.robot.subsystems.*;
 
 
@@ -41,8 +43,9 @@ public class FollowTrajectory {
      * @param trajectory
      * @return
      */
-    public RamseteCommand getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory) {
+    public RamseteCommand getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
         m_driveSubsystem = driveSubsystem;
+        trajectory = trajectory.relativeTo(zeroPose);
         return new RamseteCommand(
                 trajectory,
                 m_driveSubsystem::getPose,          // Equivalent Statement: () -> m_driveSubsystem.getPose(),
@@ -50,8 +53,8 @@ public class FollowTrajectory {
                 m_feedforward,
                 m_kinematics,
                 m_driveSubsystem::getWheelSpeeds,   // Equivalent Statement: () -> m_driveSubsystem.getWheelSpeeds(),
-                new PIDController(0.0, 0, 0),
-                new PIDController(0.0, 0, 0),
+                new PIDController(Constants.kP, 0, Constants.kD),
+                new PIDController(Constants.kP, 0, Constants.kD),
                 m_driveSubsystem::setVoltage,       // Equivalent Statement: (voltsR, voltsL) -> m_driveSubsystem.setVoltage(voltsR, voltsL)
                 m_driveSubsystem);
     }
