@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.Constants;
 import frc.robot.subsystems.*;
 
 
@@ -16,46 +15,58 @@ public class FollowTrajectory {
 
     private static SimpleMotorFeedforward m_feedforward;
     private static DifferentialDriveKinematics m_kinematics;
-  
     private static RamseteController m_controller;
-    private DriveSubsystem m_driveSubsystem;
+    private static PIDController m_pidController;
 
     
     /**
-     * @param kS
-     * @param kV
-     * @param kA
-     * @param b
-     * @param zeta
-     * @param trackWidth
-     * @param maxMotorVoltage
-     * Gets the current direction and movement of the robot and saves them to the static variables of the class
+     * @param kS The kS constant
+     * @param kV The kV constant
+     * @param kA The kA constant
+     * @param kP The kP constant
+     * @param kI The kI constant
+     * @param kD The kD constant
+     * @param b The B constant
+     * @param zeta The Zeta constant
+     * @param trackWidth The width between the tracks of the robot
      */
-    public static void config(double kS, double kV, double kA, double b, double zeta, double trackWidth) {
+    public static void config(double kS, double kV, double kA, double kP, double kI, double kD, double b, double zeta, double trackWidth) {
         m_feedforward = new SimpleMotorFeedforward(kS, kV, kA);
         m_kinematics = new DifferentialDriveKinematics(trackWidth);
         m_controller = new RamseteController(b, zeta);
+        m_pidController = new PIDController(kP, kI, kD);
     }
 
     /**
-     *
-     * @param driveSubsystem
-     * @param trajectory
-     * @return
+     * 
+     * @param kP The kP constant
+     * @param kI The kI constant
+     * @param kD The kD constant
+     */
+
+    public static void configPID(double kP, double kI, double kD) {
+        m_pidController = new PIDController(kP, kI, kD);
+    }
+
+    /**
+     * 
+     * @param driveSubsystem The drive subsystem to use
+     * @param trajectory The trajectory to follow
+     * @param zeroPose The position to start at
+     * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
     public RamseteCommand getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
-        m_driveSubsystem = driveSubsystem;
         trajectory = trajectory.relativeTo(zeroPose);
         return new RamseteCommand(
                 trajectory,
-                m_driveSubsystem::getPose,          // Equivalent Statement: () -> m_driveSubsystem.getPose(),
+                driveSubsystem::getPose,          // Equivalent Statement: () -> m_driveSubsystem.getPose(),
                 m_controller,
                 m_feedforward,
                 m_kinematics,
-                m_driveSubsystem::getWheelSpeeds,   // Equivalent Statement: () -> m_driveSubsystem.getWheelSpeeds(),
-                new PIDController(Constants.kP, 0, Constants.kD),
-                new PIDController(Constants.kP, 0, Constants.kD),
-                m_driveSubsystem::setVoltage,       // Equivalent Statement: (voltsR, voltsL) -> m_driveSubsystem.setVoltage(voltsR, voltsL)
-                m_driveSubsystem);
+                driveSubsystem::getWheelSpeeds,   // Equivalent Statement: () -> m_driveSubsystem.getWheelSpeeds(),
+                m_pidController,
+                m_pidController,
+                driveSubsystem::setVoltage,       // Equivalent Statement: (voltsR, voltsL) -> m_driveSubsystem.setVoltage(voltsR, voltsL)
+                driveSubsystem);
     }
 }

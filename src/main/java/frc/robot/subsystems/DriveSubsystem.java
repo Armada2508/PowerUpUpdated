@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.VelocityPeriod;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.sensors.*;
@@ -42,8 +43,14 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem() {
         m_right.setSensorPhase(Constants.kRightSensorInverted);
         m_left.setSensorPhase(Constants.kLeftSensorInverted);
-        setInverted(Constants.kRightInverted, m_rightMotors);
-        setInverted(Constants.kLeftInverted, m_leftMotors);
+
+        
+        m_right.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_1Ms);
+        m_left.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_1Ms);
+        m_right.configVelocityMeasurementWindow(1);
+        m_left.configVelocityMeasurementWindow(1);
+
+        m_drive.setRightSideInverted(Constants.kRightInverted);
 
         m_drive.setSafetyEnabled(false);
 
@@ -64,13 +71,18 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void setPowers(double powerR, double powerL) {
-        m_drive.tankDrive(powerL, powerR);
+        m_rightMotors.set(powerR);
+        m_leftMotors.set(powerL);
     }
 
-    public void setVoltage(double voltsR, double voltsL) {
-        //System.out.println(voltsL + "\t" + voltsR);
+    public void setVoltage(double voltsL, double voltsR) {
         m_rightMotors.setVoltage(voltsR);
         m_leftMotors.setVoltage(voltsL);
+    }
+
+    public void setArcade(double throttle, double turn) {
+        m_rightMotors.set(throttle - turn);
+        m_leftMotors.set(throttle + turn);
     }
 
     public Pose2d getPose() {
@@ -86,12 +98,19 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void reset() {
-        resetEncoders();
+        resetOdometry(new Pose2d());
         resetTalons();
         resetHeading();
+        resetGyro();
+
+        
+        m_right.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_1Ms);
+        m_left.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_1Ms);
+        m_right.configVelocityMeasurementWindow(1);
+        m_left.configVelocityMeasurementWindow(1);
     }
 
-    private void resetOdometry(Pose2d pose) {
+    public void resetOdometry(Pose2d pose) {
         resetEncoders();
         m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
     }
@@ -157,7 +176,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double toVelocity(int velocity) {
-        return EncoderUtil.toVelocity(velocity, Constants.kTicksPerRev, Constants.kGearRatio, Constants.kWheelDiameter, Constants.kSampleTime);
+        return EncoderUtil.toVelocity(velocity, Constants.kTicksPerRev, Constants.kGearRatio, Constants.kWheelDiameter, Constants.kVelSampleTime);
     }
 
     public void setConfigRight(double kP, double kI, double kD, double kF, double kMIA) {
@@ -168,13 +187,6 @@ public class DriveSubsystem extends SubsystemBase {
         setConfig(kP, kI, kD, kF, kMIA, m_left);
     }
 
-    public void setInvertedRight(boolean isInverted) {
-        setInverted(isInverted, m_rightMotors);
-    }
-
-    public void setInvertedLeft(boolean isInverted) {
-        setInverted(isInverted, m_leftMotors);
-    }
 
     private void setConfig(double kP, double kI, double kD, double kF, double kMIA, TalonSRX talon) {
         talon.config_kP(Constants.kSlot, kP);
@@ -182,10 +194,6 @@ public class DriveSubsystem extends SubsystemBase {
         talon.config_kD(Constants.kSlot, kD);
         talon.config_kF(Constants.kSlot, kF);
         talon.configMaxIntegralAccumulator(Constants.kSlot, kMIA);
-    }
-
-    private void setInverted(boolean isInverted, SpeedControllerGroup motors) {
-        motors.setInverted(isInverted);
     }
 
     public void setMaxOutput(double maxOutput) {

@@ -13,11 +13,11 @@
     # Ports for the right-side motors
     "rightMotorPorts": [3, 4],
     # Inversions for the left-side motors
-    "leftMotorsInverted": [True, True],
+    "leftMotorsInverted": [False, False],
     # Inversions for the right side motors
-    "rightMotorsInverted": [False, False],
+    "rightMotorsInverted": [True, True],
     # Wheel diameter (in units of your choice - will dictate units of analysis)
-    "wheelDiameter": 0.5,
+    "wheelDiameter": 0.1524,
     # If your robot has only one encoder, set all right encoder fields to `None`
     # Encoder edges-per-revolution (*NOT* cycles per revolution!)
     # This value should be the edges per revolution *of the wheels*, and so
@@ -26,9 +26,9 @@
     # Whether the left encoder is inverted
     "leftEncoderInverted": True,
     # Whether the right encoder is inverted:
-    "rightEncoderInverted": False,
+    "rightEncoderInverted": True,
     # Your gyro type (one of "NavX", "Pigeon", "ADXRS450", "AnalogGyro", or "None")
-    "gyroType": "None",
+    "gyroType": "Pigeon",
     # Whatever you put into the constructor of your gyro
     # Could be:
     # "SPI.Port.kMXP" (MXP SPI port for NavX or ADXRS450),
@@ -37,6 +37,11 @@
     # "new WPI_TalonSRX(3)" (Pigeon on a Talon SRX),
     # "leftSlave" (Pigeon on the left slave Talon SRX/FX),
     # "" (NavX using default SPI, ADXRS450 using onboard CS0, or no gyro)
-    "gyroPort": "",
+    "gyroPort": "0",
 }
+
+
+
+
+
 

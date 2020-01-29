@@ -3,6 +3,10 @@ package frc.lib.motion;
 import com.ctre.phoenix.motion.*;
 
 public class TrajectoryPointUtil {
+    /**
+     * 
+     * @param point The point to reset
+     */
     public static void resetPoint(TrajectoryPoint point) {
         point.auxiliaryArbFeedFwd = 0;
         point.auxiliaryVel = 0;

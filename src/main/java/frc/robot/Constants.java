@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import frc.lib.vision.FOV;
+import frc.lib.vision.Resolution;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -37,37 +39,48 @@ public final class Constants {
     public static final boolean kTurnBoostInverted = false;
 
     // Drive System Constants
-    public static final boolean kRightInverted = true;
-    public static final boolean kLeftInverted = false;
+    public static final boolean kRightInverted = false;
+    public static final boolean kDriveInverted = false;
     public static final boolean kRightSensorInverted = false;
     public static final boolean kLeftSensorInverted = true;
 
     // Trajectory Following Constants
-    public static final double kS = 0.93;
-    public static final double kV = 1.12;
-    public static final double kA = 0.118;
-    public static final double kTrackWidth = 21.25/12.0;
-    public static final double kB = 2;  
+    public static final double kS = 1.02;
+    public static final double kV = 3.44;
+    public static final double kA = 0.0086;
+    public static final double kTrackWidth = 1.8294;
+    public static final double kB = 2.0;
     public static final double kZeta = 0.7;
     public static final int kTicksPerRev = 4096;
-    public static final double kWheelDiameter = 0.5;
+    public static final double kWheelDiameter = 0.1524;
     public static final double kGearRatio = 42.0/38.0;
-    public static final double kSampleTime = 0.1;
+    public static final double kVelSampleTime = 0.1;
     public static final double kMaxMotorVoltage = 0.0;
 
     // PID
     public static final int kSlot = 0;
     public static final double kF = 0.0;
-    public static final double kP = 18.3; // For Talons: 0.00673;
+    public static final double kP = 1.5;
     public static final double kI = 0.0;
-    public static final double kD = 8.43; // For Talons: 0.00167;
+    public static final double kD = 0.0;
     public static final int kMIA = 200;
 
     // Gyro Settings
     public static final boolean kGyroReversed = false;
 
     // Dashboard Settings
-    public static final double kUpdateRate = 0.2;
+    public static final double kUpdateRate = 0.5;
+
+    // Vision Test settings
+    public static final double kTurn = 0.01;
+    public static final double kThrottle = 0.05;
+    public static final double kMaxFollowOutput = 0.6;
+    public static final double kTargetWidth = 4.0;
+    public static final double kTargetDistance = 32;
+
+    // Vision settings
+    public static final FOV kLimelightFOV = new FOV(59.6, 41.0);
+    public static final Resolution kLimelighResolution = new Resolution(320, 240);
 
 
 }

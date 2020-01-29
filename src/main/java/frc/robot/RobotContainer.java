@@ -10,11 +10,14 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.lib.motion.*;
+import frc.lib.vision.FOV;
+import frc.lib.vision.Resolution;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -37,6 +40,9 @@ public class RobotContainer {
     private ShuffleboardTab m_sensorLoggerTab = Shuffleboard.getTab("Logger");
     private NetworkTableEntry m_gyroEntry;
     private NetworkTableEntry m_odometer;
+    private NetworkTableEntry m_kP;
+    private NetworkTableEntry m_kI;
+    private NetworkTableEntry m_kD;
 
 
     /**
@@ -64,7 +70,7 @@ public class RobotContainer {
     public void robotInit() {
         initDashboard();
         m_driveSubsystem.configTalons();
-        FollowTrajectory.config(Constants.kS, Constants.kV, Constants.kA, Constants.kB, Constants.kZeta, Constants.kTrackWidth);
+        FollowTrajectory.config(Constants.kS, Constants.kV, Constants.kA, Constants.kP, Constants.kI, Constants.kD, Constants.kB, Constants.kZeta, Constants.kTrackWidth);
     }
 
     /**
@@ -78,11 +84,9 @@ public class RobotContainer {
     }
 
     public void initDashboard() {
-        m_robotTab.add("kP", Constants.kP);
-        m_robotTab.add("kI", Constants.kI);
-        m_robotTab.add("kD", Constants.kD);
-        m_robotTab.add("kF", Constants.kF);
-        m_robotTab.add("kMaxIntegralAccumulator", Constants.kMIA);
+        m_kP = m_robotTab.add("kP", Constants.kP).getEntry();
+        m_kI = m_robotTab.add("kI", Constants.kI).getEntry();
+        m_kD = m_robotTab.add("kD", Constants.kD).getEntry();
 
         WPI_TalonSRX[] allTalons = m_driveSubsystem.getAllTalons();
 
@@ -105,7 +109,7 @@ public class RobotContainer {
 
     public void updateDashboard() {
 
-        if (Timer.getFPGATimestamp() / 0.02 % (Constants.kUpdateRate / 0.02) < 1) {
+        if ((Timer.getFPGATimestamp() % Constants.kUpdateRate) / 0.02 < 1) {
 
             Random noise = new Random();
             m_gyroEntry.setDouble(m_driveSubsystem.getGyro().getFusedHeading() + (noise.nextDouble() / 10000));
@@ -119,6 +123,10 @@ public class RobotContainer {
         }
     }
 
+    public void updateFromDashboard() {
+        FollowTrajectory.configPID(m_kP.getDouble(Constants.kP), m_kI.getDouble(Constants.kI), m_kD.getDouble(Constants.kD));
+    }
+
 
     public void startDashboardCapture() {
         Shuffleboard.startRecording();
@@ -129,13 +137,11 @@ public class RobotContainer {
     }
 
     public void changeMode() {
-        m_driveSubsystem.resetTalons();
-        m_driveSubsystem.resetGyro();
-        m_driveSubsystem.resetEncoders();
+        m_driveSubsystem.reset();
     }
 
     public Command getAutonomousCommand() {
-
+/*
         FollowTrajectory followTrajectory = new FollowTrajectory();
 
         try {
@@ -145,11 +151,28 @@ public class RobotContainer {
             System.out.println(e);
             return new InstantCommand();
         }
+    */
+    
+        return new FollowTarget(m_driveSubsystem,
+            Constants.kTurn,
+            Constants.kThrottle,
+            Constants.kMaxFollowOutput,
+            Constants.kTargetWidth,
+            Constants.kTargetDistance,
+            Constants.kLimelightFOV,
+            Constants.kLimelighResolution);
     }
 
-
-    public void printPos() {
+    public void printOdo() {
         System.out.println(m_driveSubsystem.getPose());
     }
 
+    public void printPos() {
+        System.out.println(m_driveSubsystem.getPositionLeft() + "\t" + m_driveSubsystem.getPositionRight());
+    }
+
+
+    public void printVel() {
+        System.out.println(m_driveSubsystem.getWheelSpeeds());
+    }
 }
