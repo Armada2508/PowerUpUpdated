@@ -74,7 +74,7 @@ public final class Constants {
     // Vision Test settings
     public static final double kTurn = 0.01;
     public static final double kThrottle = 0.05;
-    public static final double kMaxFollowOutput = 0.6;
+    public static final double kMaxFollowOutput = 0.8;
     public static final double kTargetWidth = 4.0;
     public static final double kTargetDistance = 32;
 

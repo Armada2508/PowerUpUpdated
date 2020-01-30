@@ -66,7 +66,8 @@ public class FollowTarget extends CommandBase {
       double angleRight = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(tx.getDouble(0.0), m_fov.getX(), m_res.getX())+tw.getDouble(0.0)/2.0, m_fov.getX(), m_res.getX());
       double widthAngle = angleRight-angleLeft;
       double distance = (m_targetWidth / 2.0) / (Math.tan(Math.toRadians((widthAngle / 2.0))));
-      System.out.println(distance + "; " + angleLeft + "..." + angleRight + "; " + widthAngle);
+      //System.out.println(distance + "; " + angleLeft + "..." + angleRight + "; " + widthAngle);
+      
       double throttle = (distance - m_targetDistance) * m_kThrottle;
       double turn = tx.getDouble(0) * m_kTurn;
       if(Math.abs(throttle) > m_maxOutput) {

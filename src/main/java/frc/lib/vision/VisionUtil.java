@@ -61,6 +61,6 @@ public class VisionUtil {
      * @return The normalized angle coordinate
      */
     public static double normalizeAngle(double angle, double fov) {
-        return angle / fov;
+        return angle / (fov / 2.0);
     }
 }
