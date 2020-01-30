@@ -1,6 +1,6 @@
 package frc.lib.vision;
 
-public class CoordinatePair {
+public class CameraPoint2d {
     private double m_x;
     private double m_y;
     private boolean m_isAngle;
@@ -8,23 +8,23 @@ public class CoordinatePair {
     private Resolution m_res;
 
     /**
-     * Creates a new CoordinatePair
+     * Creates a new CameraPoint2d
      * 
      * @param tx The x angle of the target relative to the camera
      * @param ty The y angle of the target relative to the camera
      */
-    public CoordinatePair(double tx, double ty) {
+    public CameraPoint2d(double tx, double ty) {
         this(tx, ty, true);
     }
     
     /**
-     * Creates a new CoordinatePair
+     * Creates a new CameraPoint2d
      * 
      * @param x The x coordinate
      * @param y The y coordinate
-     * @param angle If these CoordinatePair values are angles
+     * @param angle If these CameraPoint2d values are angles
      */
-    public CoordinatePair(double x, double y, boolean angle) {
+    public CameraPoint2d(double x, double y, boolean angle) {
         if(angle) {
             m_isAngle = angle;
             m_x = x;
@@ -50,8 +50,8 @@ public class CoordinatePair {
     }
 
     /**
-     * Check if the CoordinatePair is an angle
-     * @return If the CoordinatePair is an angle
+     * Check if the CameraPoint2d is an angle
+     * @return If the CameraPoint2d is an angle
      */
 
     public boolean isAngle() {
@@ -59,7 +59,7 @@ public class CoordinatePair {
     }
 
     /**
-     * Center the CoordinatePair
+     * Center the CameraPoint2d
      * 
      * @param resolution The resolution of the camera
      * @param xInverted If the x coordinate is inverted
@@ -75,7 +75,7 @@ public class CoordinatePair {
     }
 
     /**
-     * Center the CoordinatePair
+     * Center the CameraPoint2d
      * 
      * @param fov The field-of-view of the camera
      * @param xInverted If the x coordinate is inverted
@@ -92,7 +92,7 @@ public class CoordinatePair {
 
 
     /**
-     * Converts the CoordinatePair to an angle
+     * Converts the CameraPoint2d to an angle
      * @param fov The field-of-view of the camera
      * @param resolution The resolution of the camera
      */
@@ -105,7 +105,7 @@ public class CoordinatePair {
 
     
     /**
-     * Converts the CoordinatePair to an angle
+     * Converts the CameraPoint2d to an angle
      * @param fov The field-of-view of the camera
      * @param resolution The resolution of the camera
      */
@@ -114,5 +114,16 @@ public class CoordinatePair {
             m_x = VisionUtil.anglesToPixels(m_x, fov.getX(), resolution.getX());
             m_y = VisionUtil.anglesToPixels(m_y, fov.getY(), resolution.getY());
         }
+    }
+
+
+    /**
+     * Stores camera parameters for point
+     * @param fov
+     * @param resolution
+     */
+    public void config(FOV fov, Resolution resolution) {
+        m_fov = fov;
+        m_res = resolution;
     }
 }
