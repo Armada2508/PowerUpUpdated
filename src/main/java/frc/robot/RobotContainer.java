@@ -8,21 +8,18 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.*;
+
+import edu.wpi.first.hal.HALValue;
+import edu.wpi.first.hal.sim.NotifyCallback;
+import edu.wpi.first.hal.sim.mockdata.DriverStationDataJNI;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.*;
-import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.lib.motion.*;
-import frc.lib.vision.FOV;
-import frc.lib.vision.Resolution;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-
-import java.io.*;
-import java.nio.file.*;
 import java.util.*;
 
 /**
@@ -34,7 +31,7 @@ import java.util.*;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-    ArrayList<NetworkTableEntry> talonEntries = new ArrayList();
+    private ArrayList<NetworkTableEntry> talonEntries = new ArrayList();
     private Joystick m_joystick = new Joystick(Constants.kJoystickPort);
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
     private ShuffleboardTab m_sensorLoggerTab = Shuffleboard.getTab("Logger");
@@ -84,6 +81,7 @@ public class RobotContainer {
     }
 
     public void initDashboard() {
+
         m_kP = m_robotTab.add("kP", Constants.kP).getEntry();
         m_kI = m_robotTab.add("kI", Constants.kI).getEntry();
         m_kD = m_robotTab.add("kD", Constants.kD).getEntry();
@@ -129,7 +127,9 @@ public class RobotContainer {
 
 
     public void startDashboardCapture() {
-        Shuffleboard.startRecording();
+        if(DriverStation.getInstance().isFMSAttached()) {
+            Shuffleboard.startRecording();
+        }
     }
 
     public void stopDashboardCapture() {

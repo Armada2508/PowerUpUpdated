@@ -8,6 +8,7 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.*;
@@ -62,9 +63,9 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.changeMode();
-    /*if(isOperatorControl()) {
+    if(isOperatorControl()) {
       m_robotContainer.stopDashboardCapture();
-    }*/
+    }
   }
 
   @Override
@@ -78,7 +79,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_robotContainer.updateFromDashboard();
     m_robotContainer.changeMode();
-    //m_robotContainer.startDashboardCapture();
+    m_robotContainer.startDashboardCapture();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
 
