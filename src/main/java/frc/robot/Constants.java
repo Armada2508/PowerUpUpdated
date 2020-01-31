@@ -68,7 +68,7 @@ public final class Constants {
     public static final double kThrottle = 0.03;
     public static final double kMaxFollowOutput = 0.6;
     public static final double kTargetWidth = 4.0;
-    public static final double kTargetDistance = 32;
+    public static final double kTargetDistance = 60;
 
     // Vision settings
     public static final FOV kLimelightFOV = new FOV(59.6, 41.0);

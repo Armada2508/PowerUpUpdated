@@ -195,7 +195,7 @@ public class RamseteCommandCopy extends CommandBase {
     m_prevTime = curTime;
     m_prevSpeeds = targetWheelSpeeds;
 
-    System.out.println("Time passed " + m_timer.hasPeriodPassed(m_trajectory.getTotalTimeSeconds()) + ", Timer: " + m_timer.get());
+    System.out.println("Timer: " + m_timer.get());
   }
 
   @Override
@@ -206,10 +206,10 @@ public class RamseteCommandCopy extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    if (m_timer.hasPeriodPassed(m_trajectory.getTotalTimeSeconds())) {
+    boolean isFinsihed = m_timer.hasPeriodPassed(m_trajectory.getTotalTimeSeconds());
+    if (isFinsihed) {
         System.out.println("End of trajectory");   
     }
-    return true;
-    //    return m_timer.hasPeriodPassed(m_trajectory.getTotalTimeSeconds());
+    return isFinsihed;
   }
 }
