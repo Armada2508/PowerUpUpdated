@@ -206,10 +206,10 @@ public class RamseteCommandCopy extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    boolean isFinsihed = m_timer.hasPeriodPassed(m_trajectory.getTotalTimeSeconds());
-    if (isFinsihed) {
+    boolean isFinished = m_timer.hasPeriodPassed(m_trajectory.getTotalTimeSeconds());
+    if (isFinished) {
         System.out.println("End of trajectory");   
     }
-    return isFinsihed;
+    return isFinished;
   }
 }
