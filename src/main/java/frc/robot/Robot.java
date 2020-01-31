@@ -11,6 +11,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.Drive;
 import edu.wpi.first.wpilibj2.command.*;
 
 /**
@@ -30,12 +31,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-  
     m_robotContainer = new RobotContainer();
 
     m_robotContainer.robotInit();
+
+    
     
   }
 
@@ -47,11 +47,7 @@ public class Robot extends TimedRobot {
    * LiveWindow and SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {   
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
+  public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     m_robotContainer.updateDashboard();
   }
@@ -61,6 +57,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    m_robotContainer.printOdo();
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.changeMode();
     if(isOperatorControl()) {
@@ -77,11 +74,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
+    CommandScheduler.getInstance().onCommandFinish((command) -> System.out.println(command.getName() + " is done and has requirements: " + command.getRequirements()));
+    CommandScheduler.getInstance().onCommandInitialize((command) -> System.out.println(command.getName() + " has been initialized and has requirements: " + command.getRequirements()));
+    CommandScheduler.getInstance().onCommandInterrupt((command) -> System.out.println(command.getName() + " has been interrupted and has requirements: " + command.getRequirements()));
+    
+    
     m_robotContainer.updateFromDashboard();
     m_robotContainer.changeMode();
     m_robotContainer.startDashboardCapture();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -93,11 +95,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    if(m_autonomousCommand.isFinished()) {
+      m_robotContainer.printOdo();
+    }
   }
 
   @Override
   public void teleopInit() {
     m_robotContainer.changeMode();
+    m_robotContainer.drive();
   }
 
   /**
@@ -105,12 +111,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.printOdo();
   }
 
   @Override
   public void testInit() {
-    // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
 

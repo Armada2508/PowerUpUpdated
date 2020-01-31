@@ -74,22 +74,6 @@ public class CameraPoint2d {
         }
     }
 
-    /**
-     * Center the CameraPoint2d
-     * 
-     * @param fov The field-of-view of the camera
-     * @param xInverted If the x coordinate is inverted
-     * @param yInverted If the y coordinate is inverted
-     */
-    public void center(FOV fov, boolean xInverted, boolean yInverted) {
-        if(!m_isAngle) {
-            m_x = VisionUtil.centerPixels((int)m_x, (double)fov.getX(), xInverted);
-            m_y = VisionUtil.centerPixels((int)m_y, (double)fov.getY(), yInverted);
-        } else {
-            System.out.println("Pair is not in pixels");
-        }
-    }
-
 
     /**
      * Converts the CameraPoint2d to an angle

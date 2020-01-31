@@ -10,14 +10,6 @@ package frc.robot;
 import frc.lib.vision.FOV;
 import frc.lib.vision.Resolution;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants.  This class should not be used for any other purpose.  All constants should be
- * declared globally (i.e. public static).  Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
 
     // Motor Ports
@@ -45,10 +37,10 @@ public final class Constants {
     public static final boolean kLeftSensorInverted = true;
 
     // Trajectory Following Constants
-    public static final double kS = 1.02;
-    public static final double kV = 3.44;
-    public static final double kA = 0.0086;
-    public static final double kTrackWidth = 1.8294;
+    public static final double kS = 1.35;
+    public static final double kV = 3.52;
+    public static final double kA = 0.129;
+    public static final double kTrackWidth = 0.5612243747769792;
     public static final double kB = 2.0;
     public static final double kZeta = 0.7;
     public static final int kTicksPerRev = 4096;
@@ -60,7 +52,7 @@ public final class Constants {
     // PID
     public static final int kSlot = 0;
     public static final double kF = 0.0;
-    public static final double kP = 1.5;
+    public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final int kMIA = 200;
@@ -72,9 +64,9 @@ public final class Constants {
     public static final double kUpdateRate = 0.5;
 
     // Vision Test settings
-    public static final double kTurn = 0.01;
-    public static final double kThrottle = 0.05;
-    public static final double kMaxFollowOutput = 0.8;
+    public static final double kTurn = 0.02;
+    public static final double kThrottle = 0.03;
+    public static final double kMaxFollowOutput = 0.6;
     public static final double kTargetWidth = 4.0;
     public static final double kTargetDistance = 32;
 

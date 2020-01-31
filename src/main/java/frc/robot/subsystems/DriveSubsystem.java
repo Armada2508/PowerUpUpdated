@@ -22,9 +22,6 @@ import frc.robot.*;
 
 
 public class DriveSubsystem extends SubsystemBase {
-    /**
-     * Creates a new DriveSubsystem.
-     */
 
     private final WPI_TalonSRX m_right = new WPI_TalonSRX(Constants.kRightMotorPort);
     private final WPI_TalonSRX m_rightFollower = new WPI_TalonSRX(Constants.kRightMotorFollowerPort);
@@ -65,8 +62,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        // This method will be called once per scheduler run
         m_odometry.update(Rotation2d.fromDegrees(getHeading()), getPositionLeft(), getPositionRight());
     }
 

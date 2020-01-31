@@ -12,6 +12,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class Drive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -53,10 +54,10 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     double throttle = m_joystick.getRawAxis(m_throttleAxis);
     double turn = m_joystick.getRawAxis(m_turnAxis);
     double turnBoost = m_joystick.getRawAxis(m_turnBoostAxis);
-
     
     throttle = JoystickUtil.deadband(throttle, Constants.kDeadbandThreshold);
     turn = JoystickUtil.deadband(turn, Constants.kDeadbandThreshold);

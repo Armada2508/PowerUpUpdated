@@ -55,9 +55,9 @@ public class FollowTrajectory {
      * @param zeroPose The position to start at
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
-    public RamseteCommand getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
+    public Command getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
         trajectory = trajectory.relativeTo(zeroPose);
-        return new RamseteCommand(
+        return new RamseteCommandCopy(
                 trajectory,
                 driveSubsystem::getPose,          // Equivalent Statement: () -> m_driveSubsystem.getPose(),
                 m_controller,

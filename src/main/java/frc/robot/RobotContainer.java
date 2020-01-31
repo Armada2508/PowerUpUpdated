@@ -16,10 +16,15 @@ import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.lib.motion.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -48,19 +53,6 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the button bindings
         configureButtonBindings();
-
-        m_driveSubsystem.setDefaultCommand(new Drive(
-                m_driveSubsystem,
-                m_joystick,
-                Constants.kThrottleAxis,
-                Constants.kTurnAxis,
-                Constants.kTurnBoostAxis,
-                Constants.kThrottleInverted,
-                Constants.kTurnInverted,
-                Constants.kTurnBoostInverted,
-                Constants.kMaxPower,
-                Constants.kTurnRatio
-        ));
 
     }
 
@@ -121,6 +113,21 @@ public class RobotContainer {
         }
     }
 
+    public void drive() {
+        Command driveCommand = new Drive(m_driveSubsystem,
+                m_joystick,
+                Constants.kThrottleAxis,
+                Constants.kTurnAxis,
+                Constants.kTurnBoostAxis,
+                Constants.kThrottleInverted,
+                Constants.kTurnInverted,
+                Constants.kTurnBoostInverted,
+                Constants.kMaxPower,
+                Constants.kTurnRatio);
+
+        driveCommand.schedule();
+    }
+
     public void updateFromDashboard() {
         FollowTrajectory.configPID(m_kP.getDouble(Constants.kP), m_kI.getDouble(Constants.kI), m_kD.getDouble(Constants.kD));
     }
@@ -140,8 +147,12 @@ public class RobotContainer {
         m_driveSubsystem.reset();
     }
 
+    public void stopTalons() {
+        m_driveSubsystem.setVoltage(0.0, 0.0);
+    }
+
     public Command getAutonomousCommand() {
-/*
+
         FollowTrajectory followTrajectory = new FollowTrajectory();
 
         try {
@@ -151,8 +162,8 @@ public class RobotContainer {
             System.out.println(e);
             return new InstantCommand();
         }
-    */
     
+    /*
         return new FollowTarget(m_driveSubsystem,
             Constants.kTurn,
             Constants.kThrottle,
@@ -161,6 +172,7 @@ public class RobotContainer {
             Constants.kTargetDistance,
             Constants.kLimelightFOV,
             Constants.kLimelighResolution);
+    */
     }
 
     public void printOdo() {
@@ -168,9 +180,8 @@ public class RobotContainer {
     }
 
     public void printPos() {
-        System.out.println(m_driveSubsystem.getPositionLeft() + "\t" + m_driveSubsystem.getPositionRight());
+        System.out.println(new WheelPositions(m_driveSubsystem.getPositionLeft(), m_driveSubsystem.getPositionRight()));
     }
-
 
     public void printVel() {
         System.out.println(m_driveSubsystem.getWheelSpeeds());
