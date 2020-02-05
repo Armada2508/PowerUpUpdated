@@ -195,13 +195,13 @@ public class RamseteCommandCopy extends CommandBase {
     m_prevTime = curTime;
     m_prevSpeeds = targetWheelSpeeds;
 
-    System.out.println("Timer: " + m_timer.get());
   }
 
   @Override
   public void end(boolean interrupted) {
     System.out.println("I'm done!");
     m_timer.stop();
+    m_output.accept(0.0, 0.0);
   }
 
   @Override
