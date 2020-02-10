@@ -64,20 +64,16 @@ public final class Constants {
     // Dashboard Settings
     public static final double kUpdateRate = 0.5;
 
-    // Vision Test Settings
+    // Vision Test settings
     public static final double kTurn = 0.02;
     public static final double kThrottle = 0.03;
     public static final double kMaxFollowOutput = 0.6;
     public static final double kTargetWidth = 4.0;
     public static final double kTargetDistance = 60;
 
-    // Vision Settings
+    // Vision settings
     public static final FOV kLimelightFOV = new FOV(59.6, 45.7);
     public static final Resolution kLimelighResolution = new Resolution(320, 240);
-
-    // Pneumatic Settings
-    public static final int lShift = 0;
-    public static final int rShift = 1;
 
 
 }

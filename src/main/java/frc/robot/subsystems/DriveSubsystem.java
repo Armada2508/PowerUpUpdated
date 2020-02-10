@@ -31,13 +31,9 @@ public class DriveSubsystem extends SubsystemBase {
     private final SpeedControllerGroup m_leftMotors = new SpeedControllerGroup(m_left, m_leftFollower);
 
     private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-    private final DifferentialDriveOdometry m_odometry;
 
     private final PigeonIMU m_imu = new PigeonIMU(0);
-
-    private final Solenoid m_lShift = new Solenoid(Constants.lShift);
-    private final Solenoid m_rShift = new Solenoid(Constants.rShift);
-    
+    private final DifferentialDriveOdometry m_odometry;
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
     
     public DriveSubsystem() {
@@ -81,11 +77,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void setArcade(double throttle, double turn) {
         m_rightMotors.set(throttle - turn);
         m_leftMotors.set(throttle + turn);
-    }
-    
-    public void shift(boolean lowGear) {
-        m_lShift.set(lowGear);
-        m_rShift.set(lowGear);
     }
 
     public Pose2d getPose() {
