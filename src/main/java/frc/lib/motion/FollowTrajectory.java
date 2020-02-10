@@ -1,7 +1,10 @@
 package frc.lib.motion;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.controller.*;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.*;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpilibj2.command.*;
@@ -49,10 +52,10 @@ public class FollowTrajectory {
     }
 
     /**
-     * 
-     * @param driveSubsystem The drive subsystem to use
-     * @param trajectory The trajectory to follow
-     * @param zeroPose The position to start at
+     * Returns a RamseteCommand that follows the specified trajectory
+     * @param driveSubsystem The DriveSubsystem to use
+     * @param trajectory The Trajectory to follow
+     * @param zeroPose The position to start relative to
      * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
      */
     public Command getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
@@ -69,4 +72,20 @@ public class FollowTrajectory {
                 driveSubsystem::setVoltage,       // Equivalent Statement: (voltsR, voltsL) -> m_driveSubsystem.setVoltage(voltsR, voltsL)
                 driveSubsystem);
     }
-}
+
+    /**
+     * Returns a RamseteCommand that follows a generated trajectory
+     * @param driveSubsystem The DriveSubsystem to use
+     * @param start The position to start at
+     * @param end The position to end at
+     * @param maxVelocity The maximum velocity of the robot
+     * @param maxAcceleration The maximum acceleration of the robot
+     * @return Returns a RamseteCommand that will follow the specified trajectory with the specified driveSubsystem
+     */
+    public Command getCommand(DriveSubsystem driveSubsystem, Pose2d start, Pose2d end, double maxVelocity, double maxAcceleration) {
+        TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(start, new ArrayList<Translation2d>(), end,config);
+        trajectory = trajectory.relativeTo(trajectory.getInitialPose());
+        return getCommand(driveSubsystem, trajectory, trajectory.getInitialPose());
+    }
+} 

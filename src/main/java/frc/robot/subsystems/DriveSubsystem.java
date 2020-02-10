@@ -35,8 +35,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final PigeonIMU m_imu = new PigeonIMU(0);
 
-    private final Solenoid m_lShift = new Solenoid(Constants.lShift);
-    private final Solenoid m_rShift = new Solenoid(Constants.rShift);
+    private final Solenoid m_lShift = new Solenoid(Constants.kLShift);
+    private final Solenoid m_rShift = new Solenoid(Constants.kRShift);
     
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
     
