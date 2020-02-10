@@ -50,10 +50,6 @@ public final class Constants {
     public static final double kVelSampleTime = 0.1;
     public static final double kMaxMotorVoltage = 0.0;
 
-    // Trajectory Generation constants
-    public static final double kMaxVelocity = 0.75;
-    public static final double kMaxAcceleration = 0.75;
-
     // PID
     public static final int kSlot = 0;
     public static final double kF = 0.0;
@@ -80,8 +76,8 @@ public final class Constants {
     public static final Resolution kLimelighResolution = new Resolution(320, 240);
 
     // Pneumatic Settings
-    public static final int kLShift = 0;
-    public static final int kRShift = 1;
+    public static final int lShift = 0;
+    public static final int rShift = 1;
 
 
 }

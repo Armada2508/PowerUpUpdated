@@ -11,15 +11,17 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.lib.motion.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -148,13 +150,6 @@ public class RobotContainer {
 
         FollowTrajectory followTrajectory = new FollowTrajectory();
 
-        return followTrajectory.getCommand(m_driveSubsystem,
-            new Pose2d(),
-            new Pose2d(5, 0, new Rotation2d()),
-            Constants.kMaxVelocity,
-            Constants.kMaxAcceleration);
-
-        /*
         try {
             Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/output/Line.wpilib.json"));
             return followTrajectory.getCommand(m_driveSubsystem, trajectory, trajectory.getInitialPose());
@@ -163,6 +158,7 @@ public class RobotContainer {
             return new InstantCommand();
         }
 
+    /*
         return new FollowTarget(m_driveSubsystem,
             Constants.kTurn,
             Constants.kThrottle,
