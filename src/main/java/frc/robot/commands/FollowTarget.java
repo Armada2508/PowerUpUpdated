@@ -7,22 +7,20 @@
 
 package frc.robot.commands;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.lib.vision.*;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class FollowTarget extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DriveSubsystem m_driveSubsystem;
+  private final VisionSubsystem m_visionSubsystem;
   private final double m_kTurn;
   private final double m_kThrottle;
   private final double m_maxOutput;
   private final double m_targetWidth;
   private final double m_targetDistance;
-  private final NetworkTableInstance m_instance;
-  private final NetworkTable m_limelight;
   private FOV m_fov;
   private Resolution m_res;
 
@@ -31,8 +29,9 @@ public class FollowTarget extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public FollowTarget(DriveSubsystem subsystem, double kTurn, double kThrottle, double maxOutput, double targetWidth, double targetDistance, FOV fov, Resolution res) {
-    m_driveSubsystem = subsystem;
+  public FollowTarget(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, double kTurn, double kThrottle, double maxOutput, double targetWidth, double targetDistance, FOV fov, Resolution res) {
+    m_driveSubsystem = driveSubsystem;
+    m_visionSubsystem = visionSubsystem;
     m_kTurn = kTurn;
     m_kThrottle = kThrottle;
     m_maxOutput = maxOutput;
@@ -41,11 +40,10 @@ public class FollowTarget extends CommandBase {
     m_fov = fov;
     m_res = res;
 
-    m_instance = NetworkTableInstance.getDefault();
-    m_limelight = m_instance.getTable("limelight");
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(driveSubsystem);
+    addRequirements(visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -56,18 +54,11 @@ public class FollowTarget extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    NetworkTableEntry targetFound = m_limelight.getEntry("tv");
-    if(targetFound.getDouble(0) == 1) {
-      NetworkTableEntry tx = m_limelight.getEntry("tx");
-      NetworkTableEntry tw = m_limelight.getEntry("thor");
-      double angleLeft = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(tx.getDouble(0.0), m_fov.getX(), m_res.getX())-tw.getDouble(0.0)/2.0, m_fov.getX(), m_res.getX());
-      double angleRight = VisionUtil.pixelsToAngles(VisionUtil.anglesToPixels(tx.getDouble(0.0), m_fov.getX(), m_res.getX())+tw.getDouble(0.0)/2.0, m_fov.getX(), m_res.getX());
-      double widthAngle = angleRight-angleLeft;
-      double distance = (m_targetWidth / 2.0) / (Math.tan(Math.toRadians((widthAngle / 2.0))));
-      //System.out.println(distance + "; " + angleLeft + "..." + angleRight + "; " + widthAngle);
-      
+    if(m_visionSubsystem.targetFound()) {
+      double x = m_visionSubsystem.getX();
+      double distance = m_visionSubsystem.getDistanceWidth(m_targetWidth);
       double throttle = (distance - m_targetDistance) * m_kThrottle;
-      double turn = tx.getDouble(0) * m_kTurn;
+      double turn = x * m_kTurn;
       if(Math.abs(throttle) > m_maxOutput) {
         throttle = m_maxOutput * Math.signum(throttle);
       }

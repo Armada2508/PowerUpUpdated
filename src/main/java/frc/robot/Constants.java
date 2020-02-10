@@ -25,8 +25,8 @@ public final class Constants {
     public static final int kTurnAxis = 2;
     public static final int kTrimAxis = 0;
     public static final double kMaxPower = 1.0;
-    public static final double kturnRatio = 0.5;
-    public static final double ktrimRatio = 0.5;
+    public static final double kTurnRatio = 0.5;
+    public static final double kTrimRatio = 0.5;
     public static final boolean kThrottleInverted = true;
     public static final boolean kTurnInverted = false;
     public static final boolean kTrimInverted = false;
@@ -72,7 +72,7 @@ public final class Constants {
     public static final double kTargetDistance = 60;
 
     // Vision settings
-    public static final FOV kLimelightFOV = new FOV(59.6, 41.0);
+    public static final FOV kLimelightFOV = new FOV(59.6, 45.7);
     public static final Resolution kLimelighResolution = new Resolution(320, 240);
 
 

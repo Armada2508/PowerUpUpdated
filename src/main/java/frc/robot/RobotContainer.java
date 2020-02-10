@@ -33,7 +33,7 @@ import java.util.*;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-    private ArrayList<NetworkTableEntry> talonEntries = new ArrayList();
+    private ArrayList<NetworkTableEntry> talonEntries = new ArrayList<NetworkTableEntry>();
     private Joystick m_joystick = new Joystick(Constants.kJoystickPort);
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
     private ShuffleboardTab m_sensorLoggerTab = Shuffleboard.getTab("Logger");
@@ -116,8 +116,8 @@ public class RobotContainer {
                 () -> (m_joystick.getRawAxis(Constants.kTrimAxis) * (Constants.kTrimInverted ? -1.0 : 1.0)),
                 () -> (m_joystick.getRawAxis(Constants.kTurnAxis) * (Constants.kTurnInverted ? -1.0 : 1.0)),
                 Constants.kMaxPower,
-                Constants.kturnRatio,
-                Constants.ktrimRatio);
+                Constants.kTurnRatio,
+                Constants.kTrimRatio);
 
         driveCommand.schedule();
     }

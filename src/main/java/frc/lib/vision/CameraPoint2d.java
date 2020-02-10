@@ -89,7 +89,7 @@ public class CameraPoint2d {
 
     
     /**
-     * Converts the CameraPoint2d to an angle
+     * Converts the CameraPoint2d to pixel coordinates
      * @param fov The field-of-view of the camera
      * @param resolution The resolution of the camera
      */
@@ -110,4 +110,33 @@ public class CameraPoint2d {
         m_fov = fov;
         m_res = resolution;
     }
+
+    
+    /**
+     * Converts the CameraPoint2d to an angle using the FOV and Resolution set globally with {@link CameraPoint2d#config(FOV, Resolution)}
+     */
+    public void toAngle() {
+        if(m_fov == null || m_res == null) {
+            return;
+        }
+        if(!m_isAngle) {
+            m_x = VisionUtil.pixelsToAngles(m_x, m_fov.getX(), m_res.getX());
+            m_y = VisionUtil.pixelsToAngles(m_y, m_fov.getY(), m_res.getY());
+        }
+    }
+
+    
+    /**
+     * Converts the CameraPoint2d to pixel coordinates using the FOV and Resolution set globally with {@link CameraPoint2d#config(FOV, Resolution)}
+     */
+    public void toPixels() {
+        if(m_fov == null || m_res == null) {
+            return;
+        }
+        if(m_isAngle) {
+            m_x = VisionUtil.anglesToPixels(m_x, m_fov.getX(), m_res.getX());
+            m_y = VisionUtil.anglesToPixels(m_y, m_fov.getY(), m_res.getY());
+        }
+    }
+
 }
