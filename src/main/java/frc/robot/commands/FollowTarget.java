@@ -6,8 +6,6 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
-
-import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.lib.vision.*;
 import edu.wpi.first.networktables.NetworkTable;

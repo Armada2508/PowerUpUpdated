@@ -23,12 +23,13 @@ public final class Constants {
     public static final int kJoystickPort = 0;
     public static final int kThrottleAxis = 1;
     public static final int kTurnAxis = 2;
-    public static final int kTurnBoostAxis = 0;
+    public static final int kTrimAxis = 0;
     public static final double kMaxPower = 1.0;
-    public static final double kTurnRatio = 0.5;
+    public static final double kturnRatio = 0.5;
+    public static final double ktrimRatio = 0.5;
     public static final boolean kThrottleInverted = true;
     public static final boolean kTurnInverted = false;
-    public static final boolean kTurnBoostInverted = false;
+    public static final boolean kTrimInverted = false;
 
     // Drive System Constants
     public static final boolean kRightInverted = false;

@@ -9,19 +9,11 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
-import edu.wpi.first.hal.HALValue;
-import edu.wpi.first.hal.sim.NotifyCallback;
-import edu.wpi.first.hal.sim.mockdata.DriverStationDataJNI;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.lib.motion.*;
@@ -120,15 +112,12 @@ public class RobotContainer {
 
     public void drive() {
         Command driveCommand = new Drive(m_driveSubsystem,
-                m_joystick,
-                Constants.kThrottleAxis,
-                Constants.kTurnAxis,
-                Constants.kTurnBoostAxis,
-                Constants.kThrottleInverted,
-                Constants.kTurnInverted,
-                Constants.kTurnBoostInverted,
+                () -> (m_joystick.getRawAxis(Constants.kThrottleAxis) * (Constants.kThrottleInverted ? -1.0 : 1.0)),
+                () -> (m_joystick.getRawAxis(Constants.kTrimAxis) * (Constants.kTrimInverted ? -1.0 : 1.0)),
+                () -> (m_joystick.getRawAxis(Constants.kTurnAxis) * (Constants.kTurnInverted ? -1.0 : 1.0)),
                 Constants.kMaxPower,
-                Constants.kTurnRatio);
+                Constants.kturnRatio,
+                Constants.ktrimRatio);
 
         driveCommand.schedule();
     }
@@ -157,17 +146,16 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+
         FollowTrajectory followTrajectory = new FollowTrajectory();
 
-        TrajectoryConfig config = new TrajectoryConfig(0.5, 0.5);
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0 ,0 ,
-                                                                                  new Rotation2d(0)),
-                                                                       new ArrayList<Translation2d>(),
-                                                                       new Pose2d(0.5, 0,
-                                                                                  new Rotation2d(0)),
-                                                                       config);
-        return followTrajectory.getCommand(m_driveSubsystem, trajectory, trajectory.getInitialPose());
-        
+        try {
+            Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(Paths.get(Filesystem.getDeployDirectory().toString(), "/paths/output/Line.wpilib.json"));
+            return followTrajectory.getCommand(m_driveSubsystem, trajectory, trajectory.getInitialPose());
+        } catch (IOException e) {
+            System.out.println(e);
+            return new InstantCommand();
+        }
 
     /*
         return new FollowTarget(m_driveSubsystem,

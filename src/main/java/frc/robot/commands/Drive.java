@@ -7,41 +7,32 @@
 
 package frc.robot.commands;
 
-import frc.lib.drive.JoystickUtil;
-import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
-import edu.wpi.first.wpilibj.Joystick;
+import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class Drive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DriveSubsystem m_driveSubsystem;
-  private Joystick m_joystick;
-  private int m_throttleAxis;
-  private int m_turnAxis;
-  private int m_turnBoostAxis;
-  private boolean m_throttleInverted;
-  private boolean m_turnInverted;
-  private boolean m_turnBoostInverted;
+  private DoubleSupplier m_throttle;
+  private DoubleSupplier m_trim;
+  private DoubleSupplier m_turn;
   private double m_maxPower;
   private double m_turnRatio;
+  private double m_trimRatio;
   /**
    * Creates a new Drive.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Drive(DriveSubsystem subsystem, Joystick joystick, int throttleAxis, int turnAxis, int turnBoostAxis, boolean throttleInverted, boolean turnInverted, boolean turnBoostInverted, double maxPower, double turnRatio) {
+  public Drive(DriveSubsystem subsystem, DoubleSupplier throttle, DoubleSupplier trim, DoubleSupplier turn, double maxPower, double turnRatio, double trimRatio) {
     m_driveSubsystem = subsystem;
-    m_joystick = joystick;
-    m_throttleAxis = throttleAxis;
-    m_turnAxis = turnAxis;
-    m_turnBoostAxis = turnBoostAxis;
-    m_throttleInverted = throttleInverted;
-    m_turnInverted = turnInverted;
-    m_turnBoostInverted = turnBoostInverted;
+    m_throttle = throttle;
+    m_trim = trim;
+    m_turn = turn;
     m_maxPower = maxPower;
     m_turnRatio = turnRatio;
+    m_trimRatio = trimRatio;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -55,21 +46,13 @@ public class Drive extends CommandBase {
   @Override
   public void execute() {
 
-    double throttle = m_joystick.getRawAxis(m_throttleAxis);
-    double turn = m_joystick.getRawAxis(m_turnAxis);
-    double turnBoost = m_joystick.getRawAxis(m_turnBoostAxis);
+    double throttle = m_throttle.getAsDouble();
+    double trim = m_trim.getAsDouble();
+    double turn = m_turn.getAsDouble();
     
-    throttle = JoystickUtil.deadband(throttle, Constants.kDeadbandThreshold);
-    turn = JoystickUtil.deadband(turn, Constants.kDeadbandThreshold);
-    turnBoost = JoystickUtil.deadband(turnBoost, Constants.kDeadbandThreshold);
-
-    if(m_throttleInverted) throttle *= -1;
-    if(m_turnInverted) turn *= -1;
-    if(m_turnBoostInverted) turnBoost *= -1; 
-
     turn *= m_turnRatio;
-    turnBoost *= m_turnRatio;
-    turn += turnBoost; 
+    trim *= m_trimRatio;
+    turn += trim; 
 
     double powerL = throttle + turn;
     double powerR = throttle - turn;

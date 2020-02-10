@@ -7,11 +7,8 @@
 
 package frc.robot;
 
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.Drive;
 import edu.wpi.first.wpilibj2.command.*;
 
 /**
@@ -74,11 +71,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
-    CommandScheduler.getInstance().onCommandFinish((command) -> System.out.println(command.getName() + " is done and has requirements: " + command.getRequirements()));
-    CommandScheduler.getInstance().onCommandInitialize((command) -> System.out.println(command.getName() + " has been initialized and has requirements: " + command.getRequirements()));
-    CommandScheduler.getInstance().onCommandInterrupt((command) -> System.out.println(command.getName() + " has been interrupted and has requirements: " + command.getRequirements()));
-    
     
     m_robotContainer.updateFromDashboard();
     m_robotContainer.changeMode();
