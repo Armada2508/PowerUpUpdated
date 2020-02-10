@@ -33,6 +33,7 @@ import java.util.*;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+    private final PneumaticsSubsystem m_pneumaticsSubsystem = new PneumaticsSubsystem();
     private ArrayList<NetworkTableEntry> talonEntries = new ArrayList<NetworkTableEntry>();
     private Joystick m_joystick = new Joystick(Constants.kJoystickPort);
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
