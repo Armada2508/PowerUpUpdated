@@ -10,7 +10,6 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.lib.vision.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class FollowTarget extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -21,8 +20,6 @@ public class FollowTarget extends CommandBase {
   private final double m_maxOutput;
   private final double m_targetWidth;
   private final double m_targetDistance;
-  private FOV m_fov;
-  private Resolution m_res;
 
   /**
    * Creates a new FollowTarget.
@@ -37,8 +34,6 @@ public class FollowTarget extends CommandBase {
     m_maxOutput = maxOutput;
     m_targetWidth = targetWidth;
     m_targetDistance = targetDistance;
-    m_fov = fov;
-    m_res = res;
 
 
     // Use addRequirements() here to declare subsystem dependencies.
