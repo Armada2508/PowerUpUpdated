@@ -57,7 +57,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_robotContainer.printOdo();
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.changeMode();
     if(isOperatorControl()) {
@@ -75,19 +74,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    CommandScheduler.getInstance().onCommandFinish((command) -> System.out.println(command.getName() + " is done and has requirements: " + command.getRequirements()));
-    CommandScheduler.getInstance().onCommandInitialize((command) -> System.out.println(command.getName() + " has been initialized and has requirements: " + command.getRequirements()));
-    CommandScheduler.getInstance().onCommandInterrupt((command) -> System.out.println(command.getName() + " has been interrupted and has requirements: " + command.getRequirements()));
-    
-    
-    m_robotContainer.updateFromDashboard();
-    m_robotContainer.changeMode();
-    m_robotContainer.startDashboardCapture();
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
   }
 
   /**
@@ -95,9 +81,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    if(m_autonomousCommand.isFinished()) {
-      m_robotContainer.printOdo();
-    }
   }
 
   @Override

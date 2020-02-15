@@ -92,11 +92,6 @@ public class RobotContainer {
                     .getEntry());
         }
 
-        m_gyroEntry = m_sensorLoggerTab.add("Gyro", m_driveSubsystem.getGyro()
-                .getFusedHeading())
-                .withWidget(BuiltInWidgets.kGraph)
-                .getEntry();
-
         m_odometer = m_sensorLoggerTab.add("Odometer", m_driveSubsystem.getAverageDistance())
                 .withWidget(BuiltInWidgets.kGraph)
                 .getEntry();
@@ -107,7 +102,6 @@ public class RobotContainer {
         if ((Timer.getFPGATimestamp() % Constants.kUpdateRate) / 0.02 < 1) {
 
             Random noise = new Random();
-            m_gyroEntry.setDouble(m_driveSubsystem.getGyro().getFusedHeading() + (noise.nextDouble() / 10000));
             m_odometer.setDouble(m_driveSubsystem.getAverageDistance() + (noise.nextDouble() / 10000));
 
             int count = 0;
@@ -179,10 +173,6 @@ public class RobotContainer {
             Constants.kLimelightFOV,
             Constants.kLimelighResolution);
     */
-    }
-
-    public void printOdo() {
-        System.out.println(m_driveSubsystem.getPose());
     }
 
     public void printPos() {

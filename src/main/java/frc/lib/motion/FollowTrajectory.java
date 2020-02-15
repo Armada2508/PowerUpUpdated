@@ -57,16 +57,5 @@ public class FollowTrajectory {
      */
     public Command getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
         trajectory = trajectory.relativeTo(zeroPose);
-        return new RamseteCommandCopy(
-                trajectory,
-                driveSubsystem::getPose,          // Equivalent Statement: () -> m_driveSubsystem.getPose(),
-                m_controller,
-                m_feedforward,
-                m_kinematics,
-                driveSubsystem::getWheelSpeeds,   // Equivalent Statement: () -> m_driveSubsystem.getWheelSpeeds(),
-                m_pidController,
-                m_pidController,
-                driveSubsystem::setVoltage,       // Equivalent Statement: (voltsR, voltsL) -> m_driveSubsystem.setVoltage(voltsR, voltsL)
-                driveSubsystem);
-    }
+        return new InstantCommand();
 }

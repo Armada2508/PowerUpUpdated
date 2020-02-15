@@ -33,8 +33,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
-    private final PigeonIMU m_imu = new PigeonIMU(0);
-    private final DifferentialDriveOdometry m_odometry;
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
     
     public DriveSubsystem() {
@@ -54,15 +52,12 @@ public class DriveSubsystem extends SubsystemBase {
         m_robotTab.add("Drive", m_drive).withWidget(BuiltInWidgets.kDifferentialDrive);
 
 
-        resetHeading();
         resetEncoders();
-        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
     }
 
 
     @Override
     public void periodic() {
-        m_odometry.update(Rotation2d.fromDegrees(getHeading()), getPositionLeft(), getPositionRight());
     }
 
     public void setPowers(double powerR, double powerL) {
@@ -80,13 +75,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_leftMotors.set(throttle + turn);
     }
 
-    public Pose2d getPose() {
-        return m_odometry.getPoseMeters();
-    }
-
-    public double getHeading() {
-        return Math.IEEEremainder(m_imu.getFusedHeading(), 360) * (Constants.kGyroReversed ? -1.0 : 1.0);
-    }
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(getVelocityLeft(), getVelocityRight());
@@ -95,8 +83,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void reset() {
         resetOdometry(new Pose2d());
         resetTalons();
-        resetHeading();
-        resetGyro();
 
         
         m_right.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_1Ms);
@@ -107,11 +93,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         resetEncoders();
-        m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
-    }
-
-    public void resetGyro() {
-        m_imu.setFusedHeading(0);
     }
 
     public void resetEncoders() {
@@ -123,9 +104,6 @@ public class DriveSubsystem extends SubsystemBase {
         talon.setSelectedSensorPosition(0);
     }
 
-    private void resetHeading() {
-        m_imu.setFusedHeading(0);
-    }
 
     public void resetTalons() {
         m_right.configFactoryDefault();
@@ -199,11 +177,4 @@ public class DriveSubsystem extends SubsystemBase {
         return new WPI_TalonSRX[]{ m_right, m_rightFollower, m_left, m_leftFollower };
     }
 
-    public DifferentialDriveOdometry getOdometry() {
-        return m_odometry;
-    }
-
-    public PigeonIMU getGyro() {
-        return m_imu;
-    }
 }
