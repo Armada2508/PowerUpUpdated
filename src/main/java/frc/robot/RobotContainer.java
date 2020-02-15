@@ -45,6 +45,7 @@ public class RobotContainer {
     private Joystick m_joystick = new Joystick(Constants.kJoystickPort);
     private ShuffleboardTab m_robotTab = Shuffleboard.getTab("Robot");
     private ShuffleboardTab m_sensorLoggerTab = Shuffleboard.getTab("Logger");
+    private CameraSubsystem m_cameraSubsystem;
     private NetworkTableEntry m_gyroEntry;
     private NetworkTableEntry m_odometer;
     private NetworkTableEntry m_kP;
@@ -62,6 +63,7 @@ public class RobotContainer {
     }
 
     public void robotInit() {
+        m_cameraSubsystem = new CameraSubsystem();
         initDashboard();
         m_driveSubsystem.configTalons();
         FollowTrajectory.config(Constants.kS, Constants.kV, Constants.kA, Constants.kP, Constants.kI, Constants.kD, Constants.kB, Constants.kZeta, Constants.kTrackWidth);
