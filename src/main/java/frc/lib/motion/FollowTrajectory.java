@@ -58,4 +58,5 @@ public class FollowTrajectory {
     public Command getCommand(DriveSubsystem driveSubsystem, Trajectory trajectory, Pose2d zeroPose) {
         trajectory = trajectory.relativeTo(zeroPose);
         return new InstantCommand();
+    }
 }
